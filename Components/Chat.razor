@@ -1,0 +1,45 @@
+﻿
+<div class="chatContainer">
+	<h3>Chat</h3>
+
+	<ul class="chatList">
+		@foreach (Tuple<string, string> tuple in Messages)
+		{
+			<li><span class="usernameClass">@tuple.Item1:</span> @tuple.Item2</li>
+		}
+	</ul>
+
+	<div class="chatInputGroup">
+		<input @bind="MessageInput" @bind:event="oninput" @onkeydown="@Enter"/>
+		<button @onclick="SendMessage">Send</button>
+	</div>
+	
+</div>
+
+
+
+@code {
+	[CascadingParameter]
+	public HubConnection? hubConnection { get; set; }
+	[CascadingParameter]
+	public string? username { get; set; }
+	[Parameter]
+	public List<Tuple<string,string>>? Messages { get; set; }
+	private string? MessageInput;
+
+	private async Task SendMessage()
+	{
+		if (hubConnection != null && MessageInput != null)
+		{
+			await hubConnection.SendAsync("SendMessage", username, MessageInput);
+		}
+		MessageInput = null;
+	}
+	private void Enter(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{
+			SendMessage();
+		}
+	}
+}

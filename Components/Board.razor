@@ -1,0 +1,14 @@
+﻿<h3>Board</h3>
+
+<div class="gridContainer">
+	@for (int i=0; i<64; i++)
+	{
+		int n = (i / 8) % 2 ^ (i % 2);
+		<Square SquareColor="(ColorEnum)(n)" Piece="@GameBoard[i]"></Square>
+	}
+</div>
+
+@code {
+	[Parameter]
+	public List<PieceEnum> GameBoard { get; set; }
+}

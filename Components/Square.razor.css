@@ -1,0 +1,10 @@
+﻿.square {
+    width: 100%;
+    height: 100%;
+}
+.light {
+    background-color: hsl(0, 0%, 55%);
+}
+.dark {
+    background-color: hsl(0, 0%, 40%);
+}

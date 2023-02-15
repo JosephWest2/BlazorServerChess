@@ -1,0 +1,13 @@
+﻿<h3>Chess</h3>
+
+<Board GameBoard="game.Board"></Board>
+
+@code {
+	[CascadingParameter]
+	public HubConnection? hubConnection { get; set; }
+	[CascadingParameter]
+	public string? username { get; set; }
+	private Game game = new Game();
+
+
+}

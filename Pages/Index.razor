@@ -1,0 +1,65 @@
+﻿@page "/"
+@inject NavigationManager Navigation
+
+@if (username is not null)
+{
+	<h1>Hello @username</h1>
+}
+
+<CascadingValue Value="@hubConnection">
+	<CascadingValue Value="username">
+		<Chat Messages="@messages"></Chat>
+		<Chess></Chess>
+	</CascadingValue>
+</CascadingValue>
+
+@if (username is null)
+{
+	<div class="Login">
+		<div class="LoginCard">
+			<h2>Enter Your Name</h2>
+			<input @bind="usernameInput" @bind:event="oninput" @onkeydown="@Enter" />
+			<button @onclick="@SetUsername">Submit</button>
+		</div>
+	</div>
+}
+
+
+@code {
+	private HubConnection? hubConnection;
+	private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
+	private string? username;
+	private string? usernameInput;
+
+	protected override async Task OnInitializedAsync()
+	{
+		hubConnection = new HubConnectionBuilder()
+			.WithUrl(Navigation.ToAbsoluteUri("/ChessHub"))
+			.Build();
+
+		hubConnection.On<string, string>("ReceiveMessage", (username, message) =>
+		{
+			messages.Add(Tuple.Create(username, message));
+			InvokeAsync(StateHasChanged);
+		});
+
+		await hubConnection.StartAsync();
+
+	}
+
+	private void Enter(KeyboardEventArgs e)
+	{
+		if (e.Code == "Enter" || e.Code == "NumpadEnter")
+		{
+			SetUsername();
+		}
+	}
+
+	private void SetUsername()
+	{
+		if (usernameInput != null)
+		{
+			username = usernameInput;
+		}
+	}
+}

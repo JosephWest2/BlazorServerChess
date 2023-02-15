@@ -1,0 +1,42 @@
+﻿.Login {
+    position: fixed;
+    margin: 0;
+    top: 0;
+    left: 0;
+    background-color: hsl(0, 0%, 0%, 0.65);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.LoginCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: clamp(25rem, 50%, 30rem);
+    height: clamp(20rem, 50%, 25rem);
+    background-color: hsl(0, 0%, 40%);
+    border-radius: 0.5rem;
+    margin-bottom: 5rem;
+}
+input {
+    padding: 0.7rem;
+    margin: 0.5rem;
+    width: clamp(280px, 50%, 450px);
+    text-align: center;
+    background-color: rgb(16, 16, 16);
+}
+button {
+    padding: 0.6rem;
+    margin: 0.5rem;
+    width: clamp(280px, 50%, 450px);
+    background-color: hsl(205, 31%, 50%);
+    
+}
+    
+h2 {
+    font-size: 2em;
+}

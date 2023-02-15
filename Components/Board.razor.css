@@ -1,0 +1,11 @@
+﻿.gridContainer {
+    display: grid;
+    width: 100%;
+    max-width: 50rem;
+    aspect-ratio: 1;
+    margin: 0;
+    padding: 0;
+    gap: 2px;
+    grid-template-columns: repeat(8, auto);
+    grid-template-rows: repeat(8, auto);
+}

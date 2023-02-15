@@ -1,0 +1,17 @@
+﻿
+
+@if (SquareColor == ColorEnum.White)
+{
+	<div class="square light">@Piece</div>
+} else
+{
+	<div class="square dark">@Piece</div>
+}
+
+
+@code {
+	[Parameter]
+	public ColorEnum SquareColor { get; set; }
+	[Parameter]
+	public PieceEnum Piece { get; set; }
+}
