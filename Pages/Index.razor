@@ -1,9 +1,14 @@
-﻿@page "/"
+﻿@page "/{GameId?}"
 @inject NavigationManager Navigation
+@inject ProtectedSessionStorage ProtectedSessionStore
 
 @if (username is not null)
 {
 	<h1>Hello @username</h1>
+}
+@if (GameId is not null)
+{
+	<h1>@GameId</h1>
 }
 
 <CascadingValue Value="@hubConnection">
@@ -26,6 +31,8 @@
 
 
 @code {
+	[Parameter]
+	public string? GameId {get; set;}
 	private HubConnection? hubConnection;
 	private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
 	private string? username;
@@ -61,5 +68,6 @@
 		{
 			username = usernameInput;
 		}
+		ProtectedSessionStore.SetAsync("username", username);
 	}
 }

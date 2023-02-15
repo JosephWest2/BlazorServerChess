@@ -78,6 +78,7 @@ namespace BlazorServerChess.Data.ChessGame
 		{
 			ColorEnum opposingColor = color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
 			HashSet<int> opponentsControlledSquares = GetControlledSquares(opposingColor);
+			return true;
 			
 		}
 		public int GetKingIndex(ColorEnum color)
