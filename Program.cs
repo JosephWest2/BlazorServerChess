@@ -1,3 +1,4 @@
+using BlazorServerChess.Data;
 using BlazorServerChess.Hubs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;

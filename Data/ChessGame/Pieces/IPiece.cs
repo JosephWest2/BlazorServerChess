@@ -6,5 +6,6 @@
 		public int TileId { get; set; }
 		public List<int> GetMoves();
 		public List<int> GetControlledSquares();
+		public bool HasMoved { get; set; }
 	}
 }

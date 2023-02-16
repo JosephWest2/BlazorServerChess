@@ -4,11 +4,12 @@
 	{
 		public ColorEnum Color { get; set; }
 		public int TileId { get; set; }
-		private bool HasMoved { get; set; }
+		public bool HasMoved { get; set; }
 		private readonly Game _game;
 		public Pawn(Game game)
 		{
 			_game = game;
+			HasMoved= false;
 		}
 
 		public List<int> GetMoves()

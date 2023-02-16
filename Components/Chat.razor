@@ -23,6 +23,8 @@
 	public HubConnection? hubConnection { get; set; }
 	[CascadingParameter]
 	public UserStateProvider UserState { get; set; }
+	[CascadingParameter]
+	public string? GameId { get; set; }
 	[Parameter]
 	public List<Tuple<string,string>>? Messages { get; set; }
 	private string? MessageInput;
@@ -31,7 +33,7 @@
 	{
 		if (hubConnection != null && MessageInput != null)
 		{
-			await hubConnection.SendAsync("SendMessage", UserState.username, MessageInput);
+			await hubConnection.SendAsync("SendMessage", UserState.username, MessageInput, GameId);
 		}
 		MessageInput = null;
 	}

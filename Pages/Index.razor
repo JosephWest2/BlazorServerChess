@@ -10,10 +10,17 @@
 {
 	<h1>@GameId</h1>
 }
-
-<CascadingValue Value="@hubConnection">
-	<Chat Messages="@messages"></Chat>
-	<Chess></Chess>
+@if (errorMessage is not null)
+{
+	<h3 style="color: red">@errorMessage</h3>
+}
+<CascadingValue Value="@GameState">
+	<CascadingValue Value="@GameId">
+		<CascadingValue Value="@hubConnection">
+			<Chat Messages="@messages"></Chat>
+			<Chess></Chess>
+		</CascadingValue>
+	</CascadingValue>
 </CascadingValue>
 
 @if (UserState.username is null)
@@ -36,6 +43,8 @@
 	private HubConnection? hubConnection;
 	private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
 	private string? usernameInput;
+	private string? errorMessage;
+	public Game? GameState = new Game();
 	protected override async Task OnInitializedAsync()
 	{
 		hubConnection = new HubConnectionBuilder()
@@ -47,8 +56,33 @@
 			messages.Add(Tuple.Create(username, message));
 			InvokeAsync(StateHasChanged);
 		});
+		hubConnection.On<string>("ReceiveErrorMessage", (message) =>
+		{
+			errorMessage = message;
+			InvokeAsync(StateHasChanged);
+		});
+		hubConnection.On<string>("InitializeGame", (whiteConnectionId) =>
+		{
+			GameState = new Game();
+			if (hubConnection.ConnectionId == whiteConnectionId)
+			{
+				GameState.PlayerIsWhite = true;
+			}
+			else
+			{
+				GameState.PlayerIsWhite = false;
+			}
+		});
+		hubConnection.On<Move>("ReceiveGameUpdate", (move) =>
+		{
+		});
 
 		await hubConnection.StartAsync();
+
+		if (GameId is not null)
+		{
+			await hubConnection.SendAsync("AddToGroup", GameId);
+		}
 
 	}
 

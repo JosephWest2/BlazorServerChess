@@ -6,10 +6,13 @@ namespace BlazorServerChess.Data.ChessGame
 	{
 		public List<PieceEnum> Board { get; set; }
 		public List<IPiece> Pieces { get; set; }
+		public bool PlayerIsWhite { get; set; }
+		public bool IsWhiteTurn { get; set; }
 		public Game()
 		{
 			InitializeBoard();
 			InitializePieces();
+			IsWhiteTurn = true;
 		}
 
 		private void InitializeBoard()
@@ -91,6 +94,35 @@ namespace BlazorServerChess.Data.ChessGame
 				}
 			}
 			return -1;
+		}
+
+		public void HandleMove(Move move)
+		{
+			IPiece? movingPiece = null;
+			int capturedPieceIndex = -1;
+			for (int i = 0; i < Pieces.Count; i++)
+			{
+				if (Pieces[i].TileId == move.StartingTileId)
+				{
+					movingPiece = Pieces[i];
+				}
+				if (Pieces[i].TileId == move.EndingTileId)
+				{
+					capturedPieceIndex = i;
+				}
+			}
+			if (movingPiece is null)
+			{
+				throw new InvalidOperationException();
+			}
+			movingPiece.TileId = move.EndingTileId;
+			if (capturedPieceIndex != -1)
+			{
+				Pieces.RemoveAt(capturedPieceIndex);
+			}
+			Board[move.StartingTileId] = PieceEnum.None;
+			Board[move.EndingTileId] = PieceEnum.
+			
 		}
 	}
 }
