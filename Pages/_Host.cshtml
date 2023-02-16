@@ -10,10 +10,10 @@
     <base href="~/" />
     <link href="css/site.css" rel="stylesheet" />
     <link href="BlazorServerChess.styles.css" rel="stylesheet">
-    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+    <component type="typeof(HeadOutlet)" render-mode="Server" />
 </head>
 <body>
-    <component type="typeof(App)" render-mode="ServerPrerendered" />
+    <component type="typeof(App)" render-mode="Server" />
 
     <div id="blazor-error-ui">
         <environment include="Staging,Production">

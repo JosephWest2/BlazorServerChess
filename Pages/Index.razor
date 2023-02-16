@@ -2,9 +2,9 @@
 @inject NavigationManager Navigation
 @inject ProtectedSessionStorage ProtectedSessionStore
 
-@if (username is not null)
+@if (UserState.username is not null)
 {
-	<h1>Hello @username</h1>
+	<h1>Hello @UserState.username</h1>
 }
 @if (GameId is not null)
 {
@@ -12,13 +12,11 @@
 }
 
 <CascadingValue Value="@hubConnection">
-	<CascadingValue Value="username">
-		<Chat Messages="@messages"></Chat>
-		<Chess></Chess>
-	</CascadingValue>
+	<Chat Messages="@messages"></Chat>
+	<Chess></Chess>
 </CascadingValue>
 
-@if (username is null)
+@if (UserState.username is null)
 {
 	<div class="Login">
 		<div class="LoginCard">
@@ -31,13 +29,13 @@
 
 
 @code {
+	[CascadingParameter]
+	private UserStateProvider UserState {get; set;}
 	[Parameter]
 	public string? GameId {get; set;}
 	private HubConnection? hubConnection;
 	private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
-	private string? username;
 	private string? usernameInput;
-
 	protected override async Task OnInitializedAsync()
 	{
 		hubConnection = new HubConnectionBuilder()
@@ -54,20 +52,20 @@
 
 	}
 
-	private void Enter(KeyboardEventArgs e)
+	private async Task Enter(KeyboardEventArgs e)
 	{
 		if (e.Code == "Enter" || e.Code == "NumpadEnter")
 		{
-			SetUsername();
+			await SetUsername();
 		}
 	}
 
-	private void SetUsername()
+	private async Task SetUsername()
 	{
 		if (usernameInput != null)
 		{
-			username = usernameInput;
+			UserState.username = usernameInput;
+			await UserState.SaveChangesAsync();
 		}
-		ProtectedSessionStore.SetAsync("username", username);
 	}
 }

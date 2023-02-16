@@ -1,0 +1,35 @@
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+@if (isLoaded)
+{
+    <CascadingValue Value="@this">
+        @ChildContent
+    </CascadingValue>
+}
+else
+{
+    <div class="Login">
+        <h1>Loading...</h1>
+    </div>
+}
+
+@code {
+    private bool isLoaded;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    public string? username { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ProtectedSessionStore.GetAsync<string>("username");
+        username = result.Success ? result.Value : null;
+        isLoaded = true;
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await ProtectedSessionStore.SetAsync("username", username);
+    }
+}
