@@ -5,6 +5,7 @@
 		public ColorEnum Color { get; set; }
 		public int TileId { get; set; }
 		public bool HasMoved { get; set; }
+		public PieceEnum PieceEnumValue { get; set; }
 		private readonly Game _game;
 		public King(Game game)
 		{

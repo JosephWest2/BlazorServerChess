@@ -8,7 +8,6 @@
   "profiles": {
     "http": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5078",
       "environmentVariables": {
@@ -17,7 +16,6 @@
     },
     "https": {
       "commandName": "Project",
-      "dotnetRunMessages": true,
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7135;http://localhost:5078",
       "environmentVariables": {

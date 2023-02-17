@@ -7,5 +7,6 @@
 		public List<int> GetMoves();
 		public List<int> GetControlledSquares();
 		public bool HasMoved { get; set; }
+		public PieceEnum PieceEnumValue { get; set; }
 	}
 }
