@@ -52,14 +52,12 @@ namespace BlazorServerChess.Data.ChessGame
 			Pieces = new List<IPiece>();
 			for (int i=0; i<8; i++)
 			{
-				Pieces.Add(new Pawn(this)
+				Pieces.Add(new Pawn(this, ColorEnum.White)
 				{
-					Color = ColorEnum.White,
 					TileId = i + 8
 				});
-				Pieces.Add(new Pawn(this)
+				Pieces.Add(new Pawn(this, ColorEnum.Black)
 				{
-					Color = ColorEnum.Black,
 					TileId = 56 - i
 				});
 			}
@@ -121,7 +119,6 @@ namespace BlazorServerChess.Data.ChessGame
 				Pieces.RemoveAt(capturedPieceIndex);
 			}
 			Board[move.StartingTileId] = PieceEnum.None;
-			Board[move.EndingTileId] = PieceEnum.
 			
 		}
 	}

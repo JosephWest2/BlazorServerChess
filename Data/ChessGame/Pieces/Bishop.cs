@@ -5,9 +5,12 @@
 		public ColorEnum Color { get; set ; }
 		public int TileId { get; set ; }
 		public bool HasMoved { get; set; }
+		public PieceEnum PieceEnumValue { get; }
 		private readonly Game _game;
-		public Bishop(Game game)
+		public Bishop(Game game, ColorEnum color)
 		{
+			Color = color;
+			PieceEnumValue = color == ColorEnum.White ? PieceEnum.WhiteBishop : PieceEnum.BlackBishop;
 			_game = game;
 			HasMoved= false;
 		}
