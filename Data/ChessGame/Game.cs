@@ -119,6 +119,8 @@ namespace BlazorServerChess.Data.ChessGame
 				Pieces.RemoveAt(capturedPieceIndex);
 			}
 			Board[move.StartingTileId] = PieceEnum.None;
+			Board[move.EndingTileId] = movingPiece.PieceEnumValue;
+			IsWhiteTurn = !IsWhiteTurn;
 			
 		}
 	}

@@ -44,9 +44,7 @@ namespace BlazorServerChess.Hubs
         }
         public async Task HandleMove (string groupGuid, Move move)
         {
-            Console.WriteLine(move.Piece);
-            Console.WriteLine(move.StartingTileId);
-            Console.WriteLine(move.EndingTileId);
+            await Clients.Group(groupGuid).SendAsync("ReceiveMove", move);
         }
 		public override async Task OnDisconnectedAsync(Exception? exception)
 		{
