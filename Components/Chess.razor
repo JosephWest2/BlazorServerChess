@@ -10,6 +10,7 @@
 	public string? username { get; set; }
 	[CascadingParameter]
 	public Game? game { get; set; }
+	[CascadingParameter]
 
 	public async Task SendMove()
 	{

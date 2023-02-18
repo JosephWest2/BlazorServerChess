@@ -73,8 +73,9 @@
 				GameState.PlayerIsWhite = false;
 			}
 		});
-		hubConnection.On<Move>("ReceiveGameUpdate", (move) =>
+		hubConnection.On<Move>("ReceiveMove", (move) =>
 		{
+			GameState.HandleMove(move);
 		});
 
 		await hubConnection.StartAsync();
