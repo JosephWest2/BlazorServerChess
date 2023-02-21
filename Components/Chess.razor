@@ -7,22 +7,22 @@
 	[CascadingParameter]
 	public HubConnection? hubConnection { get; set; }
 	[CascadingParameter]
-	public string? username { get; set; }
+	public UserStateProvider? User { get; set; }
 	[CascadingParameter]
 	public Game? game { get; set; }
 	[CascadingParameter]
+	public string? GameId { get; set; }
 
 	public async Task SendMove()
 	{
 		Move moveToSend = new Move()
 			{
-				StartingTileId = 0,
-				EndingTileId = 10,
-				Piece = PieceEnum.WhiteQueen
+				StartingTileId = 8,
+				EndingTileId = 16
 			};
 		if (hubConnection is not null)
 		{
-			await hubConnection.SendAsync("HandleMove", Guid.NewGuid().ToString(), moveToSend);
+			await hubConnection.SendAsync("HandleMove", GameId, moveToSend);
 		}
 	}
 

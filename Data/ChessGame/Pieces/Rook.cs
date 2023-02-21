@@ -1,286 +1,144 @@
 ﻿namespace BlazorServerChess.Data.ChessGame.Pieces
 {
-	public class Rook : IPiece
+	public class Rook : Piece
 	{
-		public ColorEnum Color { get; set; }
-		public int TileId { get; set; }
-		public bool HasMoved { get; set; }
-		public PieceEnum PieceEnumValue { get; }
-		private readonly Game _game;
-		public Rook(Game game, ColorEnum color)
+		public Rook(Game game, ColorEnum color, int tileIndex) : base(game, color, tileIndex)
 		{
-			Color = color;
-			PieceEnumValue = color == ColorEnum.White ? PieceEnum.WhiteRook : PieceEnum.BlackRook;
-			_game = game;
-			HasMoved= false;
+			PieceType = PieceEnum.Rook;
 		}
 
-		public List<int> GetControlledSquares()
+		public override List<int> GetControlledSquares()
 		{
 			List<int> result = new List<int>();
-			if (Color == ColorEnum.White)
+			int i = TileId - 8;
+			while (i >= 0)
 			{
-				int i = TileId - 8;
-				while (i >= 0)
+				if (_game.Board[i] == null)
 				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(i);
-					}
-					else
-					{
-						result.Add(i);
-						break;
-					}
-					i -= 8;
+					result.Add(i);
 				}
-				i = TileId + 8;
-				while (i <= 64)
+				else
 				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(i);
-					}
-					else
-					{
-						result.Add(i);
-						break;
-					}
-					i += 8;
+					result.Add(i);
+					break;
 				}
-				i = TileId % 8 - 1;
-				while (TileId % 8 - i >= 0)
-				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(TileId - i);
-					}
-					else
-					{
-						result.Add(i);
-						break;
-					}
-					i -= 1;
-				}
-				i = TileId % 8 + 1;
-				while (TileId % 8 + i <= 7)
-				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(TileId + i);
-					}
-					else
-					{
-						result.Add(i);
-						break;
-					}
-				}
+				i -= 8;
 			}
-			else if (Color == ColorEnum.Black)
+			i = TileId + 8;
+			while (i <= 64)
 			{
-				int i = TileId - 8;
-				while (i >= 0)
+				if (_game.Board[i] == null)
 				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(i);
-					}
-					else
-					{
-						result.Add(i);
-						break;
-					}
-					i -= 8;
+					result.Add(i);
 				}
-				i = TileId + 8;
-				while (i <= 64)
+				else
 				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(i);
-					}
-					else
-					{
-						result.Add(i);
-						break;
-					}
-					i += 8;
+					result.Add(i);
+					break;
 				}
-				i = TileId % 8 - 1;
-				while (TileId % 8 - i >= 0)
+				i += 8;
+			}
+			i = TileId % 8 - 1;
+			while (TileId % 8 - i >= 0)
+			{
+				if (_game.Board[i] == null)
 				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(TileId - i);
-					}
-					else
-					{
-						result.Add(i);
-						break;
-					}
-					i -= 1;
+					result.Add(TileId - i);
 				}
-				i = TileId % 8 + 1;
-				while (TileId % 8 + i <= 7)
+				else
 				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(TileId + i);
-					}
-					else
-					{
-						result.Add(i);
-						break;
-					}
+					result.Add(i);
+					break;
+				}
+				i -= 1;
+			}
+			i = TileId % 8 + 1;
+			while (TileId % 8 + i <= 7)
+			{
+				if (_game.Board[i] == null)
+				{
+					result.Add(TileId + i);
+				}
+				else
+				{
+					result.Add(i);
+					break;
 				}
 			}
 			return result;
 		}
 
-		public List<int> GetMoves()
+		public override List<int> GetMoves()
 		{
 			List<int> result = new List<int>();
-			if (Color == ColorEnum.White)
+			int i = TileId - 8;
+			while (i >= 0)
 			{
-				int i = TileId - 8;
-				while (i >= 0)
+				if (_game.Board[i] == null)
 				{
-					if (_game.Board[i] == PieceEnum.None)
+					result.Add(i);
+				}
+				else
+				{
+					if (_game.Board[i].Color != Color)
 					{
 						result.Add(i);
 					}
-					else
-					{
-						if ((int)_game.Board[i] >= 7)
-						{
-							result.Add(i);
-						}
-						break;
-					}
-					i -= 8;
+					break;
 				}
-				i = TileId + 8;
-				while (i <= 64)
+				i -= 8;
+			}
+			i = TileId + 8;
+			while (i <= 64)
+			{
+				if (_game.Board[i] == null)
 				{
-					if (_game.Board[i] == PieceEnum.None)
+					result.Add(i);
+				}
+				else
+				{
+					if (_game.Board[i].Color != Color)
 					{
 						result.Add(i);
 					}
-					else
-					{
-						if ((int)_game.Board[i] >= 7)
-						{
-							result.Add(i);
-						}
-						break;
-					}
-					i += 8;
+					break;
 				}
-				i = TileId % 8 - 1;
-				while (TileId % 8 - i >= 0)
+				i += 8;
+			}
+			i = TileId % 8 - 1;
+			while (TileId % 8 - i >= 0)
+			{
+				if (_game.Board[i] == null)
 				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(TileId - i);
-					}
-					else
-					{
-						if ((int)_game.Board[TileId - i] >= 7)
-						{
-							result.Add(i);
-						}
-						break;
-					}
-					i -= 1;
+					result.Add(TileId - i);
 				}
-				i = TileId % 8 + 1;
-				while (TileId % 8 + i <= 7)
+				else
 				{
-					if (_game.Board[i] == PieceEnum.None)
+					if (_game.Board[TileId - i].Color != Color)
 					{
-						result.Add(TileId + i);
+						result.Add(i);
 					}
-					else
+					break;
+				}
+				i -= 1;
+			}
+			i = TileId % 8 + 1;
+			while (TileId % 8 + i <= 7)
+			{
+				if (_game.Board[i] == null)
+				{
+					result.Add(TileId + i);
+				}
+				else
+				{
+					if (_game.Board[TileId + i].Color != Color)
 					{
-						if ((int)_game.Board[TileId + i] >= 7)
-						{
-							result.Add(i);
-						}
-						break;
+						result.Add(i);
 					}
+					break;
 				}
 			}
-			else if (Color == ColorEnum.Black)
-			{
-				int i = TileId - 8;
-				while (i >= 0)
-				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(i);
-					}
-					else
-					{
-						if ((int)_game.Board[i] <= 6)
-						{
-							result.Add(i);
-						}
-						break;
-					}
-					i -= 8;
-				}
-				i = TileId + 8;
-				while (i <= 64)
-				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(i);
-					}
-					else
-					{
-						if ((int)_game.Board[i] <= 6)
-						{
-							result.Add(i);
-						}
-						break;
-					}
-					i += 8;
-				}
-				i = TileId % 8 - 1;
-				while (TileId % 8 - i >= 0)
-				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(TileId - i);
-					}
-					else
-					{
-						if ((int)_game.Board[TileId - i] <= 6)
-						{
-							result.Add(i);
-						}
-						break;
-					}
-					i -= 1;
-				}
-				i = TileId % 8 + 1;
-				while (TileId % 8 + i <= 7)
-				{
-					if (_game.Board[i] == PieceEnum.None)
-					{
-						result.Add(TileId + i);
-					}
-					else
-					{
-						if ((int)_game.Board[TileId + i] <= 6)
-						{
-							result.Add(i);
-						}
-						break;
-					}
-				}
-			}
-			
+
 			return result;
 		}
 	}

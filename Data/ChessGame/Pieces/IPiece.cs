@@ -6,7 +6,8 @@
 		public int TileId { get; set; }
 		public List<int> GetMoves();
 		public List<int> GetControlledSquares();
+		public void MoveToSquare(int tileIndex);
 		public bool HasMoved { get; set; }
-		public PieceEnum PieceEnumValue { get; }
+		public PieceEnum PieceType { get; }
 	}
 }

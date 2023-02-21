@@ -2,10 +2,10 @@
 
 @if (SquareColor == ColorEnum.White)
 {
-	<div class="square light">@Piece</div>
+	<div class="square light">@Piece?.PieceType @Piece?.Color</div>
 } else
 {
-	<div class="square dark">@Piece</div>
+	<div class="square dark">@Piece?.PieceType @Piece?.Color</div>
 }
 
 
@@ -13,5 +13,5 @@
 	[Parameter]
 	public ColorEnum SquareColor { get; set; }
 	[Parameter]
-	public PieceEnum Piece { get; set; }
+	public IPiece? Piece { get; set; }
 }

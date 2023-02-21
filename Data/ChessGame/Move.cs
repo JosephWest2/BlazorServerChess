@@ -4,6 +4,5 @@
     {
         public int StartingTileId { get; set; }
         public int EndingTileId { get; set; }
-        public PieceEnum Piece { get; set; }
     }
 }

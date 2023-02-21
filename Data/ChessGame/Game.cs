@@ -1,65 +1,59 @@
-﻿using BlazorServerChess.Data.ChessGame.Pieces;
+﻿using BlazorServerChess.Components;
+using BlazorServerChess.Data.ChessGame.Pieces;
 
 namespace BlazorServerChess.Data.ChessGame
 {
 	public class Game
 	{
-		public List<PieceEnum> Board { get; set; }
-		public List<IPiece> Pieces { get; set; }
+		public List<IPiece?> Board { get; set; }
+		public HashSet<IPiece> Pieces { get; set; }
 		public bool PlayerIsWhite { get; set; }
 		public bool IsWhiteTurn { get; set; }
 		public Game()
 		{
 			InitializeBoard();
-			InitializePieces();
 			IsWhiteTurn = true;
 		}
 
 		private void InitializeBoard()
 		{
-			Board = new List<PieceEnum>();
-			Board.Add(PieceEnum.WhiteRook);
-			Board.Add(PieceEnum.WhiteKnight);
-			Board.Add(PieceEnum.WhiteBishop);
-			Board.Add(PieceEnum.WhiteQueen);
-			Board.Add(PieceEnum.WhiteKing);
-			Board.Add(PieceEnum.WhiteBishop);
-			Board.Add(PieceEnum.WhiteKnight);
-			Board.Add(PieceEnum.WhiteKnight);
-			for (int i = 0; i < 8; i++)
+			Board = new List<IPiece>();
+			Board.Add(new Rook(this, ColorEnum.White, 0));
+			Board.Add(new Knight(this, ColorEnum.White, 1));
+			Board.Add(new Bishop(this, ColorEnum.White, 2));
+			Board.Add(new Queen(this, ColorEnum.White, 3));
+			Board.Add(new King(this, ColorEnum.White, 4));
+			Board.Add(new Bishop(this, ColorEnum.White, 5));
+			Board.Add(new Knight(this, ColorEnum.White, 6));
+			Board.Add(new Rook(this, ColorEnum.White, 7));
+			for (int i = 8; i < 16; i++)
 			{
-				Board.Add(PieceEnum.WhitePawn);
+				Board.Add(new Pawn(this, ColorEnum.White, i));
 			}
-			for (int i = 0; i < 32; i++)
+			for (int i = 16; i < 48; i++)
 			{
-				Board.Add(PieceEnum.None);
+				Board.Add(null);
 			}
-			for (int i = 0; i < 8; i++)
+			for (int i = 48; i < 56; i++)
 			{
-				Board.Add(PieceEnum.BlackPawn);
+				Board.Add(new Pawn(this, ColorEnum.Black, i));
 			}
-			Board.Add(PieceEnum.BlackRook);
-			Board.Add(PieceEnum.BlackKnight);
-			Board.Add(PieceEnum.BlackBishop);
-			Board.Add(PieceEnum.BlackQueen);
-			Board.Add(PieceEnum.BlackKing);
-			Board.Add(PieceEnum.BlackBishop);
-			Board.Add(PieceEnum.BlackKnight);
-			Board.Add(PieceEnum.BlackRook);
-		}
-		private void InitializePieces()
-		{
-			Pieces = new List<IPiece>();
-			for (int i=0; i<8; i++)
+			Board.Add(new Rook(this, ColorEnum.Black, 56));
+			Board.Add(new Knight(this, ColorEnum.Black, 57));
+			Board.Add(new Bishop(this, ColorEnum.Black, 58));
+			Board.Add(new Queen(this, ColorEnum.Black, 59));
+			Board.Add(new King(this, ColorEnum.Black, 60));
+			Board.Add(new Bishop(this, ColorEnum.Black, 61));
+			Board.Add(new Knight(this, ColorEnum.Black, 62));
+			Board.Add(new Rook(this, ColorEnum.Black, 63));
+
+			Pieces = new HashSet<IPiece>();
+			foreach (var piece in Board)
 			{
-				Pieces.Add(new Pawn(this, ColorEnum.White)
+				if (piece is not null)
 				{
-					TileId = i + 8
-				});
-				Pieces.Add(new Pawn(this, ColorEnum.Black)
-				{
-					TileId = 56 - i
-				});
+					Pieces.Add(piece);
+				}
 			}
 		}
 		public HashSet<int> GetControlledSquares(ColorEnum color)
@@ -96,32 +90,12 @@ namespace BlazorServerChess.Data.ChessGame
 
 		public void HandleMove(Move move)
 		{
-			IPiece? movingPiece = null;
-			int capturedPieceIndex = -1;
-			for (int i = 0; i < Pieces.Count; i++)
-			{
-				if (Pieces[i].TileId == move.StartingTileId)
-				{
-					movingPiece = Pieces[i];
-				}
-				if (Pieces[i].TileId == move.EndingTileId)
-				{
-					capturedPieceIndex = i;
-				}
-			}
+			IPiece? movingPiece = Board[move.StartingTileId];
 			if (movingPiece is null)
 			{
-				throw new InvalidOperationException();
+				return;
 			}
-			movingPiece.TileId = move.EndingTileId;
-			if (capturedPieceIndex != -1)
-			{
-				Pieces.RemoveAt(capturedPieceIndex);
-			}
-			Board[move.StartingTileId] = PieceEnum.None;
-			Board[move.EndingTileId] = movingPiece.PieceEnumValue;
-			IsWhiteTurn = !IsWhiteTurn;
-			
+			movingPiece.MoveToSquare(move.EndingTileId);
 		}
 	}
 }

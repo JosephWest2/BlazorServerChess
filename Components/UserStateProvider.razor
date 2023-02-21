@@ -20,11 +20,13 @@ else
     public RenderFragment? ChildContent { get; set; }
 
     public string? username { get; set; }
+    public string? userId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var result = await ProtectedSessionStore.GetAsync<string>("username");
         username = result.Success ? result.Value : null;
+        userId = Guid.NewGuid().ToString();
         isLoaded = true;
     }
 

@@ -1,21 +1,13 @@
 ﻿namespace BlazorServerChess.Data.ChessGame.Pieces
 {
-	public class King : IPiece
+	public class King : Piece
 	{
-		public ColorEnum Color { get; set; }
-		public int TileId { get; set; }
-		public bool HasMoved { get; set; }
-		public PieceEnum PieceEnumValue { get; }
-		private readonly Game _game;
-		public King(Game game, ColorEnum color)
+		public King(Game game, ColorEnum color, int tileIndex) : base(game, color, tileIndex)
 		{
-			Color = color;
-			PieceEnumValue = color == ColorEnum.White ? PieceEnum.WhiteKing : PieceEnum.BlackKing;
-			_game = game;
-			HasMoved = false;
+			PieceType = PieceEnum.King;
 		}
 
-		public List<int> GetControlledSquares()
+		public override List<int> GetControlledSquares()
 		{
 			List<int> moves = new List<int>();
 
@@ -43,7 +35,7 @@
 			return moves;
 		}
 
-		public List<int> GetMoves()
+		public override List<int> GetMoves()
 		{
 			List<int> moves = new List<int>();
 			ColorEnum opposingColor = Color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
@@ -70,15 +62,11 @@
 					{
 						continue;
 					}
-					if (_game.Board[newPosition] == PieceEnum.None)
+					if (_game.Board[newPosition] == null)
 					{
 						moves.Add(newPosition);
 					}
-					else if ((int)_game.Board[newPosition] >= 7 && Color == ColorEnum.White)
-					{
-						moves.Add(newPosition);
-					}
-					else if ((int)_game.Board[newPosition] <= 6 && Color == ColorEnum.Black)
+					else if (_game.Board[newPosition].Color != Color)
 					{
 						moves.Add(newPosition);
 					}

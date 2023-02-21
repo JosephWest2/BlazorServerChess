@@ -6,6 +6,10 @@
 {
 	<h1>Hello @UserState.username</h1>
 }
+@if (hubConnection is not null)
+{
+	<h4>@hubConnection.ConnectionId</h4>
+}
 @if (GameId is not null)
 {
 	<h1>@GameId</h1>
@@ -76,6 +80,7 @@
 		hubConnection.On<Move>("ReceiveMove", (move) =>
 		{
 			GameState.HandleMove(move);
+			InvokeAsync(StateHasChanged);
 		});
 
 		await hubConnection.StartAsync();
