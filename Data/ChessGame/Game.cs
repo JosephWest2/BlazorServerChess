@@ -11,6 +11,7 @@ namespace BlazorServerChess.Data.ChessGame
 		public ColorEnum CurrentTurnColor { get; set; }
 		public bool KingInCheck { get; set; }
 		public bool CheckMate { get; set; }
+		public Move LastMove { get; set; }
 		public ColorEnum VictoryColor { get; set; }
 		public Game()
 		{
@@ -95,7 +96,9 @@ namespace BlazorServerChess.Data.ChessGame
 		public bool KingIsCheckmated(ColorEnum color)
 		{
 			ColorEnum opposingColor = color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
-			foreach (var piece in Pieces)
+			IPiece[] pieceArray = new IPiece[Pieces.Count];
+			Pieces.CopyTo(pieceArray);
+			foreach (var piece in pieceArray)
 			{
 				if (piece.Color == color && piece.GetSafeMoves().Count != 0)
 				{
@@ -152,7 +155,17 @@ namespace BlazorServerChess.Data.ChessGame
 			{
 				return;
 			}
-			movingPiece.MoveToSquare(move.EndingTileId);
+
+			if (PieceIsCastling(move, movingPiece))
+			{
+				King castlingKing = (King)movingPiece;
+				castlingKing.Castle(move);
+			}
+			else
+			{
+				movingPiece.MoveToSquare(move.EndingTileId);
+			}
+
 			CurrentTurnColor = movingPiece.Color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
 			if (KingIsInDanger(CurrentTurnColor))
 			{
@@ -167,6 +180,16 @@ namespace BlazorServerChess.Data.ChessGame
 			{
 				KingInCheck = false;
 			}
+			LastMove = move;
+		}
+
+		private bool PieceIsCastling(Move move, IPiece movingPiece)
+		{
+			if (movingPiece.PieceType == PieceEnum.King && move.EndingTileId == movingPiece.TileId -2 || move.EndingTileId == movingPiece.TileId + 2)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }

@@ -8,4 +8,5 @@
     gap: 2px;
     grid-template-columns: repeat(8, auto);
     grid-template-rows: repeat(8, auto);
+    grid
 }

@@ -74,7 +74,78 @@
 				}
 			}
 
+			if (CanCastleKingSide())
+			{
+				moves.Add(TileId - 2);
+			}
+			if (CanCastleQueenSide())
+			{
+				moves.Add(TileId + 2);
+			}
+
 			return moves;
+		}
+
+		private bool CanCastleKingSide()
+		{
+			if (HasMoved)
+			{
+				return false;
+			}
+			int[] kingSideDifference = { 1, 2 };
+			IPiece? kingSideRook = _game.Board[TileId - 3];
+
+			foreach (int i in kingSideDifference)
+			{
+				if (_game.Board[TileId - i] is not null)
+				{
+					return false;
+				}
+			}
+			if (kingSideRook is not null && kingSideRook.PieceType == PieceEnum.Rook && !kingSideRook.HasMoved)
+			{
+				return true;
+			}
+			return false;
+			
+		}
+		private bool CanCastleQueenSide()
+		{
+			if (HasMoved)
+			{
+				return false;
+			}
+			int[] queenSideDifference = { 1, 2, 3 };
+			IPiece? queenSideRook = _game.Board[TileId + 4];
+
+			foreach (int i in queenSideDifference)
+			{
+				if (_game.Board[TileId + i] is not null)
+				{
+					return false;
+				}
+			}
+			if (queenSideRook is not null && queenSideRook.PieceType == PieceEnum.Rook && !queenSideRook.HasMoved)
+			{
+				return true;
+			}
+			return false;
+
+		}
+		public void Castle(Move move)
+		{
+			if (move.EndingTileId == TileId - 2)
+			{
+				IPiece rook = _game.Board[TileId - 3];
+				rook.MoveToSquare(TileId - 1);
+				MoveToSquare(TileId - 2);
+			}
+			else
+			{
+				IPiece rook = _game.Board[TileId + 4];
+				rook.MoveToSquare(TileId + 1);
+				MoveToSquare(TileId + 2);
+			}
 		}
 	}
 }

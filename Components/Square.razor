@@ -1,44 +1,15 @@
 ﻿
 
-@if (SquareColor == ColorEnum.White)
-{
-	if (Selected)
-	{
-		<div class="square light selected">@Piece?.PieceType @Piece?.Color</div>
-	}
-	else
-	{
-		if (Available)
-		{
-			<div class="square light available">@Piece?.PieceType @Piece?.Color</div>
-		}
-		else
-		{
-			<div class="square light">@Piece?.PieceType @Piece?.Color</div>
-		}
-		
-	}
-
-} else
-{
-	if (Selected)
-	{
-		<div class="square dark selected">@Piece?.PieceType @Piece?.Color</div>
-	}
-	else
-	{
-		if (Available)
-		{
-			<div class="square dark available">@Piece?.PieceType @Piece?.Color</div>
-		}
-		else
-		{
-			<div class="square dark">@Piece?.PieceType @Piece?.Color</div>
-		}
-		
-	}
-	
-}
+<div 
+	class="
+		square 
+		@(SquareColor == ColorEnum.White ? "light" : "dark")
+		@(Available ? "available" : "") @(Selected ? "selected" : "")
+		@(GameState.KingInCheck && Piece?.PieceType == PieceEnum.King && Piece?.Color == GameState.CurrentTurnColor ? "Check" : "")
+		@Piece?.PieceType
+		@Piece?.Color
+	"
+		></div>
 
 
 @code {
@@ -50,4 +21,6 @@
 	public bool Selected { get; set; }
 	[Parameter]
 	public bool Available { get; set; }
+	[CascadingParameter]
+	public Game GameState { get; set; }
 }

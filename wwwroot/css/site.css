@@ -16,6 +16,11 @@ input {
     border: none;
 }
 button {
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+.btn {
     background-color: hsl(205, 31%, 50%);
     border-radius: 0.5rem;
     margin: 0.2rem;
@@ -23,7 +28,7 @@ button {
     border: none;
     transition-duration: 200ms;
 }
-    button:hover {
+    .btn:hover {
         cursor: pointer;
         background-color: hsl(205, 31%, 57%);
     }
@@ -86,3 +91,8 @@ h3 {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+
+
+

@@ -67,7 +67,7 @@
 			x = TileId % 8 - 1;
 			y = TileId / 8 + 1;
 			current = TileId + 7;
-			while (x <= 7 && y <= 7)
+			while (x >= 0 && y <= 7)
 			{
 				if (_game.Board[current] == null)
 				{
@@ -154,7 +154,7 @@
 			x = TileId % 8 - 1;
 			y = TileId / 8 + 1;
 			current = TileId + 7;
-			while (x <= 7 && y <= 7)
+			while (x >= 0 && y <= 7)
 			{
 				if (_game.Board[current] == null)
 				{
