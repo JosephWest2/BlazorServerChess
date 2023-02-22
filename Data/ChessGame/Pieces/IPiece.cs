@@ -4,8 +4,9 @@
 	{
 		public ColorEnum Color { get; set; }
 		public int TileId { get; set; }
-		public List<int> GetMoves();
-		public List<int> GetControlledSquares();
+		public HashSet<int> GetMoves();
+		public HashSet<int> GetControlledSquares();
+		public HashSet<int> GetSafeMoves();
 		public void MoveToSquare(int tileIndex);
 		public bool HasMoved { get; set; }
 		public PieceEnum PieceType { get; }

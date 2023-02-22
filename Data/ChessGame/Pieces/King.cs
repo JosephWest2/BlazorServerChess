@@ -7,9 +7,9 @@
 			PieceType = PieceEnum.King;
 		}
 
-		public override List<int> GetControlledSquares()
+		public override HashSet<int> GetControlledSquares()
 		{
-			List<int> moves = new List<int>();
+			HashSet<int> moves = new HashSet<int>();
 
 			// Define the possible moves for a King
 			int[] rowOffsets = { -1, -1, -1, 0, 0, 1, 1, 1 };
@@ -35,9 +35,9 @@
 			return moves;
 		}
 
-		public override List<int> GetMoves()
+		public override HashSet<int> GetMoves()
 		{
-			List<int> moves = new List<int>();
+			HashSet<int> moves = new HashSet<int>();
 			ColorEnum opposingColor = Color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
 			HashSet<int> controlledSquares = _game.GetControlledSquares(opposingColor);
 

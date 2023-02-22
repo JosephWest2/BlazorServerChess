@@ -29,13 +29,31 @@ namespace BlazorServerChess.Data.ChessGame.Pieces
 			_game.Board[tileIndex] = this;
 			
 		}
-		public virtual List<int> GetMoves()
+		public virtual HashSet<int> GetMoves()
 		{
-			return new List<int>();
+			return new HashSet<int>();
 		}
-		public virtual List<int> GetControlledSquares()
+		public virtual HashSet<int> GetControlledSquares()
 		{
-			return new List<int>();
+			return new HashSet<int>();
 		}
+		public HashSet<int> GetSafeMoves()
+		{
+			HashSet<int> result = new HashSet<int>();
+			foreach (int endingPosition in GetMoves())
+			{
+				Move move = new Move()
+				{
+					StartingTileId = TileId,
+					EndingTileId = endingPosition
+				};
+				if (_game.MoveIsSafe(move))
+				{
+					result.Add(endingPosition);
+				}
+			}
+			return result;
+		}
+		
 	}
 }

@@ -7,12 +7,15 @@ namespace BlazorServerChess.Data.ChessGame
 	{
 		public List<IPiece?> Board { get; set; }
 		public HashSet<IPiece> Pieces { get; set; }
-		public bool PlayerIsWhite { get; set; }
-		public bool IsWhiteTurn { get; set; }
+		public ColorEnum PlayerColor { get; set; }
+		public ColorEnum CurrentTurnColor { get; set; }
+		public bool KingInCheck { get; set; }
+		public bool CheckMate { get; set; }
+		public ColorEnum VictoryColor { get; set; }
 		public Game()
 		{
 			InitializeBoard();
-			IsWhiteTurn = true;
+			CurrentTurnColor = ColorEnum.White;
 		}
 
 		private void InitializeBoard()
@@ -21,8 +24,8 @@ namespace BlazorServerChess.Data.ChessGame
 			Board.Add(new Rook(this, ColorEnum.White, 0));
 			Board.Add(new Knight(this, ColorEnum.White, 1));
 			Board.Add(new Bishop(this, ColorEnum.White, 2));
-			Board.Add(new Queen(this, ColorEnum.White, 3));
-			Board.Add(new King(this, ColorEnum.White, 4));
+			Board.Add(new King(this, ColorEnum.White, 3));
+			Board.Add(new Queen(this, ColorEnum.White, 4));
 			Board.Add(new Bishop(this, ColorEnum.White, 5));
 			Board.Add(new Knight(this, ColorEnum.White, 6));
 			Board.Add(new Rook(this, ColorEnum.White, 7));
@@ -41,8 +44,8 @@ namespace BlazorServerChess.Data.ChessGame
 			Board.Add(new Rook(this, ColorEnum.Black, 56));
 			Board.Add(new Knight(this, ColorEnum.Black, 57));
 			Board.Add(new Bishop(this, ColorEnum.Black, 58));
-			Board.Add(new Queen(this, ColorEnum.Black, 59));
-			Board.Add(new King(this, ColorEnum.Black, 60));
+			Board.Add(new King(this, ColorEnum.Black, 59));
+			Board.Add(new Queen(this, ColorEnum.Black, 60));
 			Board.Add(new Bishop(this, ColorEnum.Black, 61));
 			Board.Add(new Knight(this, ColorEnum.Black, 62));
 			Board.Add(new Rook(this, ColorEnum.Black, 63));
@@ -69,12 +72,66 @@ namespace BlazorServerChess.Data.ChessGame
 			return result;
 
 		}
-		public bool CheckKingDanger(ColorEnum color)
+		public bool KingIsInDanger(ColorEnum color)
 		{
 			ColorEnum opposingColor = color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
 			HashSet<int> opponentsControlledSquares = GetControlledSquares(opposingColor);
-			return true;
+
+			IPiece? king = null;
+			foreach (var piece in Pieces)
+			{
+				if (piece.Color == color && piece.PieceType == PieceEnum.King)
+				{
+					king = piece;
+				}
+			}
 			
+			if (opponentsControlledSquares.Contains(king.TileId))
+			{
+				return true;
+			}
+			return false;
+		}
+		public bool KingIsCheckmated(ColorEnum color)
+		{
+			ColorEnum opposingColor = color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
+			foreach (var piece in Pieces)
+			{
+				if (piece.Color == color && piece.GetSafeMoves().Count != 0)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		public bool MoveIsSafe(Move move)
+		{
+			IPiece movingPiece = Board[move.StartingTileId];
+			IPiece? capturedPiece = Board[move.EndingTileId];
+			Board[move.StartingTileId] = null;
+			Board[move.EndingTileId] = movingPiece;
+
+			movingPiece.TileId = move.EndingTileId;
+			Pieces.Remove(capturedPiece);
+
+
+			bool result = true;
+			if (KingIsInDanger(movingPiece.Color))
+			{
+				result = false;
+			}
+
+			if (capturedPiece != null)
+			{
+				Pieces.Add(capturedPiece);
+			}
+			movingPiece.TileId = move.StartingTileId;
+
+			Board[move.StartingTileId] = movingPiece;
+			Board[move.EndingTileId] = capturedPiece;
+
+			return result;
+
 		}
 		public int GetKingIndex(ColorEnum color)
 		{
@@ -96,6 +153,20 @@ namespace BlazorServerChess.Data.ChessGame
 				return;
 			}
 			movingPiece.MoveToSquare(move.EndingTileId);
+			CurrentTurnColor = movingPiece.Color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
+			if (KingIsInDanger(CurrentTurnColor))
+			{
+				KingInCheck = true;
+				if (KingIsCheckmated(CurrentTurnColor))
+				{
+					CheckMate = true;
+					VictoryColor = movingPiece.Color;
+				}
+			}
+			else
+			{
+				KingInCheck = false;
+			}
 		}
 	}
 }

@@ -3,12 +3,100 @@
 <div class="gridContainer">
 	@for (int i=0; i<64; i++)
 	{
+		int num = i;
 		int n = (i / 8) % 2 ^ (i % 2);
-		<Square SquareColor="(ColorEnum)(n)" Piece="@GameBoard[i]"></Square>
+		if (selected == i)
+		{
+			if (possibleMoves.Contains(i))
+			{
+				<button @onclick="(e) => HandleClick(e, num)">
+					<Square Available="true" Selected="true" SquareColor="(ColorEnum)(n)" Piece="@GameBoard[i]"></Square>
+				</button>
+			}
+			else
+			{
+				<button @onclick="(e) => HandleClick(e, num)">
+					<Square Available="false" Selected="true" SquareColor="(ColorEnum)(n)" Piece="@GameBoard[i]"></Square>
+				</button>
+			}
+			
+		}
+		else
+		{
+			if (possibleMoves.Contains(i))
+			{
+				<button @onclick="(e) => HandleClick(e, num)">
+					<Square Available="true" Selected="false" SquareColor="(ColorEnum)(n)" Piece="@GameBoard[i]"></Square>
+				</button>
+			}
+			else
+			{
+				<button @onclick="(e) => HandleClick(e, num)">
+					<Square Available="false" Selected="false" SquareColor="(ColorEnum)(n)" Piece="@GameBoard[i]"></Square>
+				</button>
+			}
+			
+		}
 	}
 </div>
 
 @code {
+	[CascadingParameter]
+	public Game? GameState { get; set; }
+	[CascadingParameter]
+	public HubConnection? hubConnection { get; set; }
+	[CascadingParameter]
+	public string? GameId { get; set; }
 	[Parameter]
 	public List<IPiece?> GameBoard { get; set; }
+	public int? selected { get; set; }
+	HashSet<int> possibleMoves = new HashSet<int>();
+
+	public async Task HandleClick(MouseEventArgs e, int i)
+	{
+		if (selected == null)
+		{
+			if (GameBoard[i] == null || GameBoard[i].Color != GameState.CurrentTurnColor)
+			{
+				return;
+			}
+		}
+		else
+		{
+			if (!possibleMoves.Contains(i))
+			{
+				selected = null;
+				possibleMoves = new HashSet<int>();
+				return;
+			}
+		}
+		if (possibleMoves.Contains(i))
+		{
+			if (hubConnection is not null)
+			{
+				Move moveToSend = new Move()
+					{
+						StartingTileId = (int)selected,
+						EndingTileId = i
+					};
+				await hubConnection.SendAsync("HandleMove", GameId, moveToSend);
+			}
+			selected = null;
+			possibleMoves = new HashSet<int>();
+		}
+		else
+		{
+			selected = i;
+			IPiece? piece = GameBoard[i];
+			if (piece is not null)
+			{
+				possibleMoves = piece.GetSafeMoves();
+			}
+			else
+			{
+				possibleMoves = new HashSet<int>();
+			}
+		}
+
+	}
 }

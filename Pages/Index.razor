@@ -18,6 +18,15 @@
 {
 	<h3 style="color: red">@errorMessage</h3>
 }
+@if (GameState.KingInCheck)
+{
+	<h4 style="color: yellow">Check!</h4>
+}
+@if (GameState.CheckMate)
+{
+	<h4 style="color:green">Checkmate!</h4>
+	<h4 style="color:green">@GameState.VictoryColor wins!</h4>
+}
 <CascadingValue Value="@GameState">
 	<CascadingValue Value="@GameId">
 		<CascadingValue Value="@hubConnection">
@@ -70,11 +79,11 @@
 			GameState = new Game();
 			if (hubConnection.ConnectionId == whiteConnectionId)
 			{
-				GameState.PlayerIsWhite = true;
+				GameState.PlayerColor = ColorEnum.White;
 			}
 			else
 			{
-				GameState.PlayerIsWhite = false;
+				GameState.PlayerColor = ColorEnum.Black;
 			}
 		});
 		hubConnection.On<Move>("ReceiveMove", (move) =>

@@ -7,9 +7,9 @@
 			PieceType = PieceEnum.Knight;
 		}
 
-		public override List<int> GetControlledSquares()
+		public override HashSet<int> GetControlledSquares()
 		{
-			List<int> moves = new List<int>();
+			HashSet<int> moves = new HashSet<int>();
 
 			int[] rowOffsets = { -2, -1, 1, 2, 2, 1, -1, -2 };
 			int[] colOffsets = { 1, 2, 2, 1, -1, -2, -2, -1 };
@@ -32,9 +32,9 @@
 			return moves;
 		}
 
-		public override List<int> GetMoves()
+		public override HashSet<int> GetMoves()
 		{
-			List<int> moves = new List<int>();
+			HashSet<int> moves = new HashSet<int>();
 
 			int[] rowOffsets = { -2, -1, 1, 2, 2, 1, -1, -2 };
 			int[] colOffsets = { 1, 2, 2, 1, -1, -2, -2, -1 };

@@ -7,9 +7,9 @@
 			PieceType = PieceEnum.Rook;
 		}
 
-		public override List<int> GetControlledSquares()
+		public override HashSet<int> GetControlledSquares()
 		{
-			List<int> result = new List<int>();
+			HashSet<int> result = new HashSet<int>();
 			int i = TileId - 8;
 			while (i >= 0)
 			{
@@ -25,7 +25,7 @@
 				i -= 8;
 			}
 			i = TileId + 8;
-			while (i <= 64)
+			while (i < 64)
 			{
 				if (_game.Board[i] == null)
 				{
@@ -38,39 +38,42 @@
 				}
 				i += 8;
 			}
-			i = TileId % 8 - 1;
-			while (TileId % 8 - i >= 0)
+			int di = 1;
+			while (TileId % 8 - di >= 0)
 			{
+				i = TileId - di;
 				if (_game.Board[i] == null)
 				{
-					result.Add(TileId - i);
+					result.Add(i);
 				}
 				else
 				{
 					result.Add(i);
 					break;
 				}
-				i -= 1;
+				di += 1;
 			}
-			i = TileId % 8 + 1;
-			while (TileId % 8 + i <= 7)
+			di = 1;
+			while (TileId % 8 + di <= 7)
 			{
+				i = TileId + di;
 				if (_game.Board[i] == null)
 				{
-					result.Add(TileId + i);
+					result.Add(i);
 				}
 				else
 				{
 					result.Add(i);
 					break;
 				}
+				di += 1;
 			}
 			return result;
 		}
 
-		public override List<int> GetMoves()
+		public override HashSet<int> GetMoves()
 		{
-			List<int> result = new List<int>();
+			HashSet<int> result = new HashSet<int>();
 			int i = TileId - 8;
 			while (i >= 0)
 			{
@@ -89,7 +92,7 @@
 				i -= 8;
 			}
 			i = TileId + 8;
-			while (i <= 64)
+			while (i < 64)
 			{
 				if (_game.Board[i] == null)
 				{
@@ -105,38 +108,41 @@
 				}
 				i += 8;
 			}
-			i = TileId % 8 - 1;
-			while (TileId % 8 - i >= 0)
+			int di = 1;
+			while (TileId % 8 - di >= 0)
 			{
+				i = TileId - di;
 				if (_game.Board[i] == null)
 				{
-					result.Add(TileId - i);
+					result.Add(i);
 				}
 				else
 				{
-					if (_game.Board[TileId - i].Color != Color)
+					if (_game.Board[i].Color != Color)
 					{
 						result.Add(i);
 					}
 					break;
 				}
-				i -= 1;
+				di += 1;
 			}
-			i = TileId % 8 + 1;
-			while (TileId % 8 + i <= 7)
+			di = 1;
+			while (TileId % 8 + di <= 7)
 			{
+				i = TileId + di;
 				if (_game.Board[i] == null)
 				{
-					result.Add(TileId + i);
+					result.Add(i);
 				}
 				else
 				{
-					if (_game.Board[TileId + i].Color != Color)
+					if (_game.Board[i].Color != Color)
 					{
 						result.Add(i);
 					}
 					break;
 				}
+				di += 1;
 			}
 
 			return result;

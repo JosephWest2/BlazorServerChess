@@ -7,9 +7,9 @@
 			PieceType = PieceEnum.Pawn;
 		}
 
-		public override List<int> GetMoves()
+		public override HashSet<int> GetMoves()
 		{
-			List<int> result = new List<int>();
+			HashSet<int> result = new HashSet<int>();
 			if (Color == ColorEnum.Black)
 			{
 				if (TileId - 8 >= 0 && _game.Board[TileId - 8] == null)
@@ -20,11 +20,11 @@
 						result.Add(TileId - 16);
 					}
 				}
-				if (TileId % 8 > 0 && _game.Board[TileId - 9].Color != Color && _game.Board[TileId - 9] != null)
+				if (TileId % 8 > 0 && _game.Board[TileId - 9]?.Color != Color && _game.Board[TileId - 9] != null)
 				{
 					result.Add(TileId - 9);
 				}
-				if (TileId % 8 < 7 && _game.Board[TileId - 7].Color != Color && _game.Board[TileId - 7] != null)
+				if (TileId % 8 < 7 && _game.Board[TileId - 7]?.Color != Color && _game.Board[TileId - 7] != null)
 				{
 					result.Add(TileId - 7);
 				}
@@ -39,11 +39,11 @@
 						result.Add(TileId + 16);
 					}
 				}
-				if (TileId % 8 > 0 && _game.Board[TileId + 9].Color != Color && _game.Board[TileId + 9] != null)
+				if (TileId % 8 > 0 && _game.Board[TileId + 9]?.Color != Color && _game.Board[TileId + 9] != null)
 				{
 					result.Add(TileId + 9);
 				}
-				if (TileId % 8 < 7 && _game.Board[TileId + 7].Color != Color && _game.Board[TileId + 7] != null)
+				if (TileId % 8 < 7 && _game.Board[TileId + 7]?.Color != Color && _game.Board[TileId + 7] != null)
 				{
 					result.Add(TileId + 7);
 				}
@@ -51,9 +51,9 @@
 			return result;
 		}
 
-		public override List<int> GetControlledSquares()
+		public override HashSet<int> GetControlledSquares()
 		{
-			List<int> result = new List<int>();
+			HashSet<int> result = new HashSet<int>();
 			if (Color == ColorEnum.Black)
 			{
 				if (TileId % 8 > 0)

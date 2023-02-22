@@ -7,9 +7,9 @@
 			PieceType = PieceEnum.Bishop;
 		}
 
-		public override List<int> GetControlledSquares()
+		public override HashSet<int> GetControlledSquares()
 		{
-			List<int> result = new List<int>();
+			HashSet<int> result = new HashSet<int>();
 			int x = TileId % 8 - 1;
 			int y = TileId / 8 - 1;
 			int current = TileId - 9;
@@ -85,9 +85,9 @@
 			return result;
 		}
 
-		public override List<int> GetMoves()
+		public override HashSet<int> GetMoves()
 		{
-			List<int> result = new List<int>();
+			HashSet<int> result = new HashSet<int>();
 			int x = TileId % 8 - 1;
 			int y = TileId / 8 - 1;
 			int current = TileId - 9;

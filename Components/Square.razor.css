@@ -8,3 +8,9 @@
 .dark {
     background-color: hsl(0, 0%, 40%);
 }
+.selected {
+    background-color: red;
+}
+.available {
+    background-color: blue;
+}
