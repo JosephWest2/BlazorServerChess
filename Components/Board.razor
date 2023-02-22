@@ -1,6 +1,4 @@
-﻿<h3>Board</h3>
-
-<div class="gridContainer">
+﻿<div class="gridContainer">
 	@for (int i=0; i<64; i++)
 	{
 		int num = i;
@@ -54,6 +52,10 @@
 
 	public async Task HandleClick(MouseEventArgs e, int i)
 	{
+		if (GameState.CurrentTurnColor != GameState.PlayerColor)
+		{
+			return;
+		}
 		if (selected == null)
 		{
 			if (GameBoard[i] == null || GameBoard[i].Color != GameState.CurrentTurnColor)

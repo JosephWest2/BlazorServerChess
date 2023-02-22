@@ -2,35 +2,39 @@
 @inject NavigationManager Navigation
 @inject ProtectedSessionStorage ProtectedSessionStore
 
-@if (UserState.username is not null)
-{
-	<h1>Hello @UserState.username</h1>
-}
-@if (hubConnection is not null)
-{
-	<h4>@hubConnection.ConnectionId</h4>
-}
-@if (GameId is not null)
-{
-	<h1>@GameId</h1>
-}
-@if (errorMessage is not null)
-{
-	<h3 style="color: red">@errorMessage</h3>
-}
-@if (GameState.KingInCheck)
-{
-	<h4 style="color: yellow">Check!</h4>
-}
-@if (GameState.CheckMate)
-{
-	<h4 style="color:green">Checkmate!</h4>
-	<h4 style="color:green">@GameState.VictoryColor wins!</h4>
-}
 <CascadingValue Value="@GameState">
 	<CascadingValue Value="@GameId">
 		<CascadingValue Value="@hubConnection">
 			<Chat Messages="@messages"></Chat>
+			<div>
+				@if (UserState.username is not null)
+				{
+					<p>@UserState.username</p>
+				}
+				@if (hubConnection is not null)
+				{
+					<p>@hubConnection.ConnectionId</p>
+				}
+				@if (GameId is not null)
+				{
+					<p>@GameId</p>
+				}
+				@if (errorMessage is not null)
+				{
+					<p style="color: red">@errorMessage</p>
+				}
+				@if (GameState.KingInCheck)
+				{
+					<p style="color: yellow">Check!</p>
+				}
+				@if (GameState.CheckMate)
+				{
+					<p style="color:green">Checkmate!</p>
+					<p style="color:green">@GameState.VictoryColor wins!</p>
+				}
+				<p>@GameState.CurrentTurnColor</p>
+				<p>@GameState.PlayerColor</p>
+			</div>
 			<Chess></Chess>
 		</CascadingValue>
 	</CascadingValue>
@@ -76,6 +80,7 @@
 		});
 		hubConnection.On<string>("InitializeGame", (whiteConnectionId) =>
 		{
+			errorMessage = "game started!";
 			GameState = new Game();
 			if (hubConnection.ConnectionId == whiteConnectionId)
 			{

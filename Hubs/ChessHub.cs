@@ -31,6 +31,7 @@ namespace BlazorServerChess.Hubs
 
             if (GroupConnectionState[groupGuid].Count == 2)
             {
+                Console.WriteLine("game started");
                 List<string> options = new List<string>();
                 foreach (string connId in GroupConnectionState[groupGuid])
                 {
