@@ -16,22 +16,33 @@ else
 @code {
     private bool isLoaded;
 
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+        [Parameter]
+        public RenderFragment? ChildContent { get; set; }
 
-    public string? username { get; set; }
-    public string? userId { get; set; }
+        public string? username { get; set; }
+        public string? userId { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        var result = await ProtectedSessionStore.GetAsync<string>("username");
-        username = result.Success ? result.Value : null;
-        userId = Guid.NewGuid().ToString();
-        isLoaded = true;
+        protected override async Task OnInitializedAsync()
+        {
+            var result = await ProtectedSessionStore.GetAsync<Dictionary<string,string>>("User");
+            if (result.Success)
+            {
+                username = result.Value["username"];
+                userId = result.Value["userId"];
+            }
+            else
+            {
+                userId = Guid.NewGuid().ToString();
+            }
+
+            isLoaded = true;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict["username"] = username;
+            dict["userId"] = userId;
+            await ProtectedSessionStore.SetAsync("User", dict);
+        }
     }
-
-    public async Task SaveChangesAsync()
-    {
-        await ProtectedSessionStore.SetAsync("username", username);
-    }
-}

@@ -7,12 +7,12 @@ namespace BlazorServerChess.Data.ChessGame
 	{
 		public List<IPiece?> Board { get; set; }
 		public HashSet<IPiece> Pieces { get; set; }
-		public ColorEnum PlayerColor { get; set; }
 		public ColorEnum CurrentTurnColor { get; set; }
 		public bool KingInCheck { get; set; }
 		public bool CheckMate { get; set; }
 		public Move LastMove { get; set; }
 		public ColorEnum VictoryColor { get; set; }
+
 		public Game()
 		{
 			InitializeBoard();
@@ -190,6 +190,25 @@ namespace BlazorServerChess.Data.ChessGame
 				return true;
 			}
 			return false;
+		}
+
+		public void CopyGame(Game game)
+		{
+			Board = new List<IPiece?>();
+			foreach (var piece in game.Board)
+			{
+				Board.Add(piece);
+			}
+			Pieces = new HashSet<IPiece>();
+			foreach (var piece in game.Pieces)
+			{
+				Pieces.Add(piece);
+			}
+			CurrentTurnColor = game.CurrentTurnColor;
+			KingInCheck = game.KingInCheck;
+			CheckMate = game.CheckMate;
+			LastMove = game.LastMove;
+			VictoryColor = game.VictoryColor;
 		}
 	}
 }

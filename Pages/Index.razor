@@ -2,124 +2,126 @@
 @inject NavigationManager Navigation
 @inject ProtectedSessionStorage ProtectedSessionStore
 
-<CascadingValue Value="@GameState">
-	<CascadingValue Value="@GameId">
-		<CascadingValue Value="@hubConnection">
-			<Chat Messages="@messages"></Chat>
-			<div>
-				@if (UserState.username is not null)
-				{
-					<p>@UserState.username</p>
-				}
-				@if (hubConnection is not null)
-				{
-					<p>@hubConnection.ConnectionId</p>
-				}
-				@if (GameId is not null)
-				{
-					<p>@GameId</p>
-				}
-				@if (errorMessage is not null)
-				{
-					<p style="color: red">@errorMessage</p>
-				}
-				@if (GameState.KingInCheck)
-				{
-					<p style="color: yellow">Check!</p>
-				}
-				@if (GameState.CheckMate)
-				{
-					<p style="color:green">Checkmate!</p>
-					<p style="color:green">@GameState.VictoryColor wins!</p>
-				}
-				<p>@GameState.CurrentTurnColor</p>
-				<p>@GameState.PlayerColor</p>
-			</div>
-			<Chess></Chess>
-		</CascadingValue>
-	</CascadingValue>
-</CascadingValue>
+    <CascadingValue Value="@PlayerColor">
+        <CascadingValue Value="@GameState">
+            <CascadingValue Value="@GameId">
+                <CascadingValue Value="@hubConnection">
+                    <Chat Messages="@messages"></Chat>
+                    <div>
+                        @if (UserState.username is not null)
+                        {
+                            <p>@UserState.username</p>
+                        }
+                        @if (hubConnection is not null)
+                        {
+                            <p>@hubConnection.ConnectionId</p>
+                        }
+                        @if (GameId is not null)
+                        {
+                            <p>@GameId</p>
+                        }
+                        @if (errorMessage is not null)
+                        {
+                            <p style="color: red">@errorMessage</p>
+                        }
+                        @if (GameState.KingInCheck)
+                        {
+                            <p style="color: yellow">Check!</p>
+                        }
+                        @if (GameState.CheckMate)
+                        {
+                            <p style="color:green">Checkmate!</p>
+                            <p style="color:green">@GameState.VictoryColor wins!</p>
+                        }
+                        <p>@GameState.CurrentTurnColor</p>
+                        <p>@PlayerColor</p>
+                    </div>
+                    <Chess></Chess>
+                </CascadingValue>
+            </CascadingValue>
+        </CascadingValue>
+    </CascadingValue>
 
-@if (UserState.username is null)
-{
-	<div class="Login">
-		<div class="LoginCard">
-			<h2>Enter Your Name</h2>
-			<input @bind="usernameInput" @bind:event="oninput" @onkeydown="@Enter" />
-			<button class="btn" @onclick="@SetUsername">Submit</button>
-		</div>
-	</div>
-}
+    @if (UserState.username is null)
+    {
+        <div class="Login">
+            <div class="LoginCard">
+                <h2>Enter Your Name</h2>
+                <input @bind="usernameInput" @bind:event="oninput" @onkeydown="@Enter" />
+                <button class="btn" @onclick="@SetUsername">Submit</button>
+            </div>
+        </div>
+    }
 
 
-@code {
-	[CascadingParameter]
-	private UserStateProvider UserState {get; set;}
-	[Parameter]
-	public string? GameId {get; set;}
-	private HubConnection? hubConnection;
-	private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
-	private string? usernameInput;
-	private string? errorMessage;
-	public Game? GameState = new Game();
-	protected override async Task OnInitializedAsync()
-	{
-		hubConnection = new HubConnectionBuilder()
-			.WithUrl(Navigation.ToAbsoluteUri("/ChessHub"))
-			.Build();
+    @code {
+        [CascadingParameter]
+        private UserStateProvider UserState { get; set; }
+        [Parameter]
+        public string? GameId { get; set; }
+        private HubConnection? hubConnection;
+        private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
+        private string? usernameInput;
+        private string? errorMessage;
+        public ColorEnum? PlayerColor;
+        public Game? GameState = new Game();
+        protected override async Task OnInitializedAsync()
+        {
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(Navigation.ToAbsoluteUri("/ChessHub"))
+                .Build();
 
-		hubConnection.On<string, string>("ReceiveMessage", (username, message) =>
-		{
-			messages.Add(Tuple.Create(username, message));
-			InvokeAsync(StateHasChanged);
-		});
-		hubConnection.On<string>("ReceiveErrorMessage", (message) =>
-		{
-			errorMessage = message;
-			InvokeAsync(StateHasChanged);
-		});
-		hubConnection.On<string>("InitializeGame", (whiteConnectionId) =>
-		{
-			errorMessage = "game started!";
-			GameState = new Game();
-			if (hubConnection.ConnectionId == whiteConnectionId)
-			{
-				GameState.PlayerColor = ColorEnum.White;
-			}
-			else
-			{
-				GameState.PlayerColor = ColorEnum.Black;
-			}
-		});
-		hubConnection.On<Move>("ReceiveMove", (move) =>
-		{
-			GameState.HandleMove(move);
-			InvokeAsync(StateHasChanged);
-		});
+            hubConnection.On<string, string>("ReceiveMessage", (username, message) =>
+            {
+                messages.Add(Tuple.Create(username, message));
+                InvokeAsync(StateHasChanged);
+            });
+            hubConnection.On<string>("ReceiveErrorMessage", (message) =>
+            {
+                errorMessage = message;
+                InvokeAsync(StateHasChanged);
+            });
+            hubConnection.On<ServerGame>("InitializeGame", (serverGame) =>
+            {
+                GameState = new Game();
+                GameState.CopyGame(serverGame.game);
+                PlayerColor = UserState.userId == serverGame.PlayerOneId ? serverGame.PlayerOneColor : serverGame.PlayerTwoColor;
+                InvokeAsync(StateHasChanged);
+            });
+            hubConnection.On<Move>("ReceiveMove", (move) =>
+            {
+                GameState.HandleMove(move);
+                InvokeAsync(StateHasChanged);
+            });
+            hubConnection.On<Game>("UpdateGame", (game) =>
+            {
+                GameState.CopyGame(game);
+                InvokeAsync(StateHasChanged);
+            });
 
-		await hubConnection.StartAsync();
+            await hubConnection.StartAsync();
 
-		if (GameId is not null)
-		{
-			await hubConnection.SendAsync("AddToGroup", GameId);
-		}
+            if (GameId is not null)
+            {
+                await hubConnection.SendAsync("AddToGroup", GameId, UserState.userId);
+            }
 
-	}
+        }
 
-	private async Task Enter(KeyboardEventArgs e)
-	{
-		if (e.Code == "Enter" || e.Code == "NumpadEnter")
-		{
-			await SetUsername();
-		}
-	}
+        private async Task Enter(KeyboardEventArgs e)
+        {
+            if (e.Code == "Enter" || e.Code == "NumpadEnter")
+            {
+                await SetUsername();
+            }
+        }
 
-	private async Task SetUsername()
-	{
-		if (usernameInput != null)
-		{
-			UserState.username = usernameInput;
-			await UserState.SaveChangesAsync();
-		}
-	}
-}
+        private async Task SetUsername()
+        {
+            if (usernameInput != null)
+            {
+                UserState.username = usernameInput;
+                await UserState.SaveChangesAsync();
+            }
+        }
+    }

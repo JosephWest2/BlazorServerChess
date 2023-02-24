@@ -7,7 +7,8 @@ namespace BlazorServerChess.Hubs
 {
     public class ChessHub : Hub
     {
-        internal static ConcurrentDictionary<string, HashSet<string>> GroupConnectionState = new ConcurrentDictionary<string, HashSet<string>>();
+        internal static ConcurrentDictionary<string, ServerGame> ServerGames = new ConcurrentDictionary<string, ServerGame>();
+
         public async Task SendMessage(string username, string message, string groupGuid)
         {
             await Clients.Group(groupGuid).SendAsync("ReceiveMessage", username, message);
@@ -16,49 +17,29 @@ namespace BlazorServerChess.Hubs
         {
             await Clients.Client(connectionId).SendAsync("ReceiveErrorMessage", message);
         }
-        public async Task AddToGroup (string groupGuid)
+        public async Task AddToGroup (string groupGuid, string userId)
         {
-            if (GroupConnectionState.ContainsKey(groupGuid) && GroupConnectionState[groupGuid].Count >= 2)
-            {
-				await SendErrorMessage(Context.ConnectionId, "Group full");
-				return;
-			}
+            
             await Groups.AddToGroupAsync(Context.ConnectionId, groupGuid);
-            if (!GroupConnectionState.TryAdd(groupGuid, new HashSet<string> {Context.ConnectionId}))
+            ServerGames.TryAdd(groupGuid, new ServerGame());
+            ServerGame groupGame = ServerGames[groupGuid];
+            groupGame.TryAddPlayer(userId, Context.ConnectionId);
+            if (!groupGame.GameisFull())
             {
-                GroupConnectionState[groupGuid].Add(Context.ConnectionId);
+                await Clients.Group(groupGuid).SendAsync("ReceiveErrorMessage", "waiting for player to join");
             }
-
-            if (GroupConnectionState[groupGuid].Count == 2)
+            else
             {
-                Console.WriteLine("game started");
-                List<string> options = new List<string>();
-                foreach (string connId in GroupConnectionState[groupGuid])
-                {
-                    options.Add(connId);
-                }
-                string whitePlayerConnectionId;
-                var rand = new Random(); 
-                whitePlayerConnectionId = rand.NextDouble() < 0.5 ? options[0] : options[1];
-				Clients.Group(groupGuid).SendAsync("InitializeGame", whitePlayerConnectionId);
+                await Clients.Group(groupGuid).SendAsync("ReceiveErrorMessage", "Game Started");
+                groupGame.game = new Game();
+                await Clients.Group(groupGuid).SendAsync("InitializeGame", groupGame);
             }
         }
         public async Task HandleMove (string groupGuid, Move move)
         {
-            await Clients.Group(groupGuid).SendAsync("ReceiveMove", move);
+            ServerGame groupGame = ServerGames[groupGuid];
+            groupGame.game.HandleMove(move);
+            await Clients.Group(groupGuid).SendAsync("UpdateGame", groupGame.game);
         }
-		public override async Task OnDisconnectedAsync(Exception? exception)
-		{
-            foreach (KeyValuePair<string,HashSet<string>> entry in GroupConnectionState)
-            {
-                entry.Value.Remove(Context.ConnectionId);
-                if (entry.Value.Count == 0)
-                {
-                    HashSet<string> b;
-                    GroupConnectionState.TryRemove(entry.Key, out b);
-                }
-			}
-			await base.OnDisconnectedAsync(exception);
-		}
 	}
 }
