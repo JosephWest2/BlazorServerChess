@@ -57,6 +57,9 @@
     {
         if (GameState.CurrentTurnColor != PlayerColor)
         {
+            Console.WriteLine("wrong color");
+            Console.WriteLine(GameState.CurrentTurnColor);
+            Console.WriteLine(PlayerColor);
             return;
         }
         if (selected == null)

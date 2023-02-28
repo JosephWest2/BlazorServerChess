@@ -6,6 +6,10 @@
 		{
 			PieceType = PieceEnum.Pawn;
 		}
+		public Pawn(string pieceJson) : base(pieceJson)
+		{
+
+		}
 
 		public override HashSet<int> GetMoves()
 		{

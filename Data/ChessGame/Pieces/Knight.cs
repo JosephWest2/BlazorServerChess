@@ -6,6 +6,10 @@
 		{
 			PieceType = PieceEnum.Knight;
 		}
+		public Knight(string pieceJson) : base(pieceJson)
+		{
+
+		}
 
 		public override HashSet<int> GetControlledSquares()
 		{

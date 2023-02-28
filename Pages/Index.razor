@@ -54,59 +54,55 @@
     }
 
 
-    @code {
-        [CascadingParameter]
-        private UserStateProvider UserState { get; set; }
-        [Parameter]
-        public string? GameId { get; set; }
-        private HubConnection? hubConnection;
-        private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
-        private string? usernameInput;
-        private string? errorMessage;
-        public ColorEnum? PlayerColor;
-        public Game? GameState = new Game();
-        protected override async Task OnInitializedAsync()
+@code {
+    [CascadingParameter]
+    private UserStateProvider UserState { get; set; }
+    [Parameter]
+    public string? GameId { get; set; }
+    private HubConnection? hubConnection;
+    private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
+    private string? usernameInput;
+    private string? errorMessage;
+    public ColorEnum PlayerColor;
+    public Game? GameState = new Game();
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/ChessHub"))
+            .Build();
+
+        hubConnection.On<string, string>("ReceiveMessage", (username, message) =>
         {
-            hubConnection = new HubConnectionBuilder()
-                .WithUrl(Navigation.ToAbsoluteUri("/ChessHub"))
-                .Build();
+            messages.Add(Tuple.Create(username, message));
+            InvokeAsync(StateHasChanged);
+        });
+        hubConnection.On<string>("ReceiveErrorMessage", (message) =>
+        {
+            errorMessage = message;
+            InvokeAsync(StateHasChanged);
+        });
+        hubConnection.On<string>("ReceiveInitializeGame", (serverGameJson) =>
+        {
+            errorMessage = serverGameJson;
+            ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
+            GameState = serverGame.game;
+            PlayerColor = UserState.userId == serverGame.PlayerOneId ? serverGame.PlayerOneColor : serverGame.PlayerTwoColor;
+            InvokeAsync(StateHasChanged);
+        });
+        hubConnection.On<string>("ReceiveUpdateGame", (gameJson) =>
+        {
+            GameState = JsonHandler.GameFromJson(gameJson);
+            InvokeAsync(StateHasChanged);
+        });
 
-            hubConnection.On<string, string>("ReceiveMessage", (username, message) =>
-            {
-                messages.Add(Tuple.Create(username, message));
-                InvokeAsync(StateHasChanged);
-            });
-            hubConnection.On<string>("ReceiveErrorMessage", (message) =>
-            {
-                errorMessage = message;
-                InvokeAsync(StateHasChanged);
-            });
-            hubConnection.On<ServerGame>("InitializeGame", (serverGame) =>
-            {
-                GameState = new Game();
-                GameState.CopyGame(serverGame.game);
-                PlayerColor = UserState.userId == serverGame.PlayerOneId ? serverGame.PlayerOneColor : serverGame.PlayerTwoColor;
-                InvokeAsync(StateHasChanged);
-            });
-            hubConnection.On<Move>("ReceiveMove", (move) =>
-            {
-                GameState.HandleMove(move);
-                InvokeAsync(StateHasChanged);
-            });
-            hubConnection.On<Game>("UpdateGame", (game) =>
-            {
-                GameState.CopyGame(game);
-                InvokeAsync(StateHasChanged);
-            });
+        await hubConnection.StartAsync();
 
-            await hubConnection.StartAsync();
-
-            if (GameId is not null)
-            {
-                await hubConnection.SendAsync("AddToGroup", GameId, UserState.userId);
-            }
-
+        if (GameId is not null)
+        {
+            await hubConnection.SendAsync("AddToGroup", GameId, UserState.userId);
         }
+
+    }
 
         private async Task Enter(KeyboardEventArgs e)
         {
@@ -124,4 +120,4 @@
                 await UserState.SaveChangesAsync();
             }
         }
-    }
+}

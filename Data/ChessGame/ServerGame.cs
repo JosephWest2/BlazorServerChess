@@ -24,6 +24,19 @@
                 PlayerTwoColor = ColorEnum.White;
             }
         }
+        public ServerGame(bool playerOneIsWhite)
+        {
+            if (playerOneIsWhite)
+            {
+				PlayerOneColor = ColorEnum.White;
+				PlayerTwoColor = ColorEnum.Black;
+			}
+            else
+            {
+				PlayerOneColor = ColorEnum.Black;
+				PlayerTwoColor = ColorEnum.White;
+			}
+        }
         public bool TryAddPlayer(string userId, string ConnectionId)
         {
             if (PlayerOneId is null)

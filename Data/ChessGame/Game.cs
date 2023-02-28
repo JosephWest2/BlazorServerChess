@@ -1,5 +1,7 @@
 ﻿using BlazorServerChess.Components;
 using BlazorServerChess.Data.ChessGame.Pieces;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BlazorServerChess.Data.ChessGame
 {
@@ -18,6 +20,7 @@ namespace BlazorServerChess.Data.ChessGame
 			InitializeBoard();
 			CurrentTurnColor = ColorEnum.White;
 		}
+
 
 		private void InitializeBoard()
 		{

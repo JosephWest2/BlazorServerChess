@@ -16,6 +16,10 @@ namespace BlazorServerChess.Data.ChessGame.Pieces
 			_game = game;
 			HasMoved = false;
 		}
+		protected Piece(string pieceJson)
+		{
+
+		}
 		public virtual void MoveToSquare(int tileIndex)
 		{
 			_game.Board[TileId] = null;

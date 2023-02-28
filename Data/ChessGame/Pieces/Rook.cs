@@ -6,6 +6,10 @@
 		{
 			PieceType = PieceEnum.Rook;
 		}
+		public Rook(string pieceJson) : base(pieceJson)
+		{
+
+		}
 
 		public override HashSet<int> GetControlledSquares()
 		{

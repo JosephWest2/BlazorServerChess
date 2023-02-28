@@ -2,6 +2,7 @@
 using BlazorServerChess.Data.ChessGame;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
+using System.Text.Json;
 
 namespace BlazorServerChess.Hubs
 {
@@ -32,14 +33,16 @@ namespace BlazorServerChess.Hubs
             {
                 await Clients.Group(groupGuid).SendAsync("ReceiveErrorMessage", "Game Started");
                 groupGame.game = new Game();
-                await Clients.Group(groupGuid).SendAsync("InitializeGame", groupGame);
+                string groupGameJson = JsonSerializer.Serialize<ServerGame>(groupGame);
+                await Clients.Group(groupGuid).SendAsync("ReceiveInitializeGame", groupGameJson);
             }
         }
         public async Task HandleMove (string groupGuid, Move move)
         {
             ServerGame groupGame = ServerGames[groupGuid];
             groupGame.game.HandleMove(move);
-            await Clients.Group(groupGuid).SendAsync("UpdateGame", groupGame.game);
+            string gameJson = JsonSerializer.Serialize<Game>(groupGame.game);
+            await Clients.Group(groupGuid).SendAsync("ReceiveUpdateGame", gameJson);
         }
 	}
 }

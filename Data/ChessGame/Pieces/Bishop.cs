@@ -6,6 +6,10 @@
 		{
 			PieceType = PieceEnum.Bishop;
 		}
+		public Bishop(string pieceJson) : base(pieceJson)
+		{
+
+		}
 
 		public override HashSet<int> GetControlledSquares()
 		{

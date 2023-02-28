@@ -4,5 +4,6 @@
     {
         public int StartingTileId { get; set; }
         public int EndingTileId { get; set; }
+
     }
 }
