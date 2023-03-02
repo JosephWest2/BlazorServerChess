@@ -1,0 +1,11 @@
+﻿<h3>Timer</h3>
+
+@code {
+	public System.Timers.Timer timer;
+
+	public override async Task OnInitializedAsync()
+	{
+		timer = new System.Timers.Timer(1000);
+		timer.Elapsed
+	}
+}

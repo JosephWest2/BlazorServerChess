@@ -27,6 +27,7 @@ button {
     padding: 0.3rem;
     border: none;
     transition-duration: 200ms;
+    text-decoration: none;
 }
     .btn:hover {
         cursor: pointer;
@@ -60,6 +61,36 @@ h3 {
     margin-bottom: 5rem;
 }
 
+.loginInput {
+    padding: 0.7rem;
+    margin: 0.5rem;
+    width: clamp(280px, 50%, 450px);
+    text-align: center;
+    background-color: rgb(16, 16, 16);
+}
+
+.loginButton {
+    padding: 0.6rem;
+    margin: 0.5rem;
+    width: clamp(280px, 50%, 450px);
+    background-color: hsl(205, 31%, 50%);
+}
+
+.lginh2 {
+    font-size: 2em;
+}
+
+.rowContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.columnContainer {
+    display: flex;
+    flex-direction: column;
+}
 
 
 

@@ -46,7 +46,7 @@
     [CascadingParameter]
     public string? GameId { get; set; }
     [CascadingParameter]
-    public ColorEnum PlayerColor { get; set; }
+    public ColorEnum? PlayerColor { get; set; }
     [Parameter]
     public List<IPiece?> GameBoard { get; set; }
 
@@ -55,7 +55,7 @@
 
     public async Task HandleClick(MouseEventArgs e, int i)
     {
-        if (GameState.CurrentTurnColor != PlayerColor)
+        if (PlayerColor is null || GameState.CurrentTurnColor != PlayerColor)
         {
             Console.WriteLine("wrong color");
             Console.WriteLine(GameState.CurrentTurnColor);

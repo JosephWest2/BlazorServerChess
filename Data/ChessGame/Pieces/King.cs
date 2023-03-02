@@ -15,15 +15,12 @@
 		{
 			HashSet<int> moves = new HashSet<int>();
 
-			// Define the possible moves for a King
 			int[] rowOffsets = { -1, -1, -1, 0, 0, 1, 1, 1 };
 			int[] colOffsets = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
-			// Calculate the row and column of the King's current position
 			int row = TileId / 8;
 			int col = TileId % 8;
 
-			// Iterate through the possible moves and add them to the list if they are valid
 			for (int i = 0; i < 8; i++)
 			{
 				int newRow = row + rowOffsets[i];
@@ -45,15 +42,12 @@
 			ColorEnum opposingColor = Color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
 			HashSet<int> controlledSquares = _game.GetControlledSquares(opposingColor);
 
-			// Define the possible moves for a King
 			int[] rowOffsets = { -1, -1, -1, 0, 0, 1, 1, 1 };
 			int[] colOffsets = { -1, 0, 1, -1, 1, -1, 0, 1 };
 
-			// Calculate the row and column of the King's current position
 			int row = TileId / 8;
 			int col = TileId % 8;
 
-			// Iterate through the possible moves and add them to the list if they are valid
 			for (int i = 0; i < 8; i++)
 			{
 				int newRow = row + rowOffsets[i];

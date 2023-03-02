@@ -1,27 +1,6 @@
 ﻿<Board GameBoard="game.Board"></Board>
-<button class="btn" @onclick=SendMove>Send Move</button>
 
 @code {
 	[CascadingParameter]
-	public HubConnection? hubConnection { get; set; }
-	[CascadingParameter]
-	public UserStateProvider? User { get; set; }
-	[CascadingParameter]
 	public Game? game { get; set; }
-	[CascadingParameter]
-	public string? GameId { get; set; }
-
-	public async Task SendMove()
-	{
-		Move moveToSend = new Move()
-			{
-				StartingTileId = 8,
-				EndingTileId = 16
-			};
-		if (hubConnection is not null)
-		{
-			await hubConnection.SendAsync("HandleMove", GameId, moveToSend);
-		}
-	}
-
 }

@@ -1,17 +1,41 @@
-﻿@page "/{GameId?}"
+﻿@page "/Online/{GameId?}"
 @inject NavigationManager Navigation
 
 <CascadingValue Value="@PlayerColor">
     <CascadingValue Value="@GameState">
         <CascadingValue Value="@GameId">
             <CascadingValue Value="@hubConnection">
-                <div class="rowContainer">
-                    <Chess></Chess>
-                    <div class="columnContainer">
-                        <Chat Messages="@messages"></Chat>
-                    </div>
-                    
+                <Chat Messages="@messages"></Chat>
+                <div>
+                    @if (UserState.username is not null)
+                    {
+                        <p>@UserState.username</p>
+                    }
+                    @if (hubConnection is not null)
+                    {
+                        <p>@hubConnection.ConnectionId</p>
+                    }
+                    @if (GameId is not null)
+                    {
+                        <p>@GameId</p>
+                    }
+                    @if (errorMessage is not null)
+                    {
+                        <p style="color: red">@errorMessage</p>
+                    }
+                    @if (GameState.KingInCheck)
+                    {
+                        <p style="color: yellow">Check!</p>
+                    }
+                    @if (GameState.CheckMate)
+                    {
+                        <p style="color:green">Checkmate!</p>
+                        <p style="color:green">@GameState.VictoryColor wins!</p>
+                    }
+                    <p>@GameState.CurrentTurnColor</p>
+                    <p>@PlayerColor</p>
                 </div>
+                <Chess></Chess>
             </CascadingValue>
         </CascadingValue>
     </CascadingValue>

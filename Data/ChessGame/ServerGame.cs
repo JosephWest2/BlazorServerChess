@@ -74,5 +74,26 @@
                 PlayertwoConnectionId = ConnectionId;
             }
         }
+
+        public bool ContainsOnePlayer()
+        {
+            if (PlayerOneId is not null && PlayerTwoId is null)
+            {
+                return true;
+            }
+            else if (PlayerTwoId is not null && PlayerOneId is null)
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool ContainsNoPlayers()
+        {
+            if (PlayerOneId is null && PlayerTwoId is null)
+            {
+                return true;
+            }
+            return false;
+        }
 	}
 }
