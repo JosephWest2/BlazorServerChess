@@ -2,74 +2,77 @@
 {
 	public class ServerGame
 	{
-		public string PlayerOneId { get; set; }
-        public string PlayerOneConnectionId { get; set; }
-        public string PlayerOneUsername { get; set; }
-		public ColorEnum PlayerOneColor { get; }
-		public string PlayerTwoId { get; set; }
-        public string PlayertwoConnectionId { get; set; }
-        public string PlayerTwoUsername { get; set; }
-		public ColorEnum PlayerTwoColor { get; }
+		public Player PlayerOne { get; set; }
+        public Player PlayerTwo { get; set; }
 		public Game game { get; set; }
         public string GroupGuid { get; set; }
         System.Timers.Timer _timer;
 
 		public ServerGame()
 		{
+            PlayerOne = new Player();
+            PlayerTwo = new Player();
             var rand = new Random();
             if (rand.NextDouble() < 0.5)
             {
-                PlayerOneColor = ColorEnum.White;
-                PlayerTwoColor = ColorEnum.Black;
+                PlayerOne.Color = ColorEnum.White;
+                PlayerTwo.Color = ColorEnum.Black;
             }
             else
             {
-                PlayerOneColor = ColorEnum.Black;
-                PlayerTwoColor = ColorEnum.White;
+                PlayerOne.Color = ColorEnum.Black;
+                PlayerTwo.Color = ColorEnum.White;
             }
             StartTimer();
         }
         public ServerGame(bool playerOneIsWhite)
         {
+            PlayerOne = new Player();
+            PlayerTwo = new Player();
             if (playerOneIsWhite)
             {
-				PlayerOneColor = ColorEnum.White;
-				PlayerTwoColor = ColorEnum.Black;
+				PlayerOne.Color = ColorEnum.White;
+				PlayerTwo.Color = ColorEnum.Black;
 			}
             else
             {
-				PlayerOneColor = ColorEnum.Black;
-				PlayerTwoColor = ColorEnum.White;
+				PlayerOne.Color = ColorEnum.Black;
+				PlayerTwo.Color = ColorEnum.White;
 			}
             StartTimer();
         }
         public ServerGame(string groupGuid)
         {
+            PlayerOne = new Player();
+            PlayerTwo = new Player();
             GroupGuid = groupGuid;
             var rand = new Random();
             if (rand.NextDouble() < 0.5)
             {
-                PlayerOneColor = ColorEnum.White;
-                PlayerTwoColor = ColorEnum.Black;
+                PlayerOne.Color = ColorEnum.White;
+                PlayerTwo.Color = ColorEnum.Black;
             }
             else
             {
-                PlayerOneColor = ColorEnum.Black;
-                PlayerTwoColor = ColorEnum.White;
+                PlayerOne.Color = ColorEnum.Black;
+                PlayerTwo.Color = ColorEnum.White;
             }
             StartTimer();
         }
-        public bool TryAddPlayer(string userId, string ConnectionId)
+        public bool TryAddPlayer(string userId, string ConnectionId, string username)
         {
-            if (PlayerOneId is null)
+            if (PlayerOne.Id is null)
             {
-                PlayerOneId = userId;
-                PlayerOneConnectionId = ConnectionId;
+                PlayerOne.Id = userId;
+                PlayerOne.ConnectionId = ConnectionId;
+                PlayerOne.Username = username;
+
             }
-            else if (PlayerTwoId is null)
+            else if (PlayerTwo.Id is null)
             {
-                PlayerTwoId = userId;
-                PlayertwoConnectionId = ConnectionId;
+                PlayerTwo.Id = userId;
+                PlayerTwo.ConnectionId = ConnectionId;
+                PlayerTwo.Username = username;
             }
             else
             {
@@ -79,31 +82,31 @@
         }
         public bool GameisFull()
         {
-            return PlayerOneId is not null && PlayerTwoId is not null ? true : false;
+            return PlayerOne.Id is not null && PlayerTwo.Id is not null ? true : false;
         }
         public bool PlayerIsInGame(string userId)
         {
-            return PlayerOneId == userId || PlayerTwoId == userId ? true : false;
+            return PlayerOne.Id == userId || PlayerTwo.Id == userId ? true : false;
         }
         public void UpdateConnectionId(string userId, string ConnectionId)
         {
-            if (PlayerOneId == userId)
+            if (PlayerOne.Id == userId)
             {
-                PlayerOneConnectionId = ConnectionId;
+                PlayerOne.ConnectionId = ConnectionId;
             }
-            else if (PlayerTwoId == userId)
+            else if (PlayerTwo.Id == userId)
             {
-                PlayertwoConnectionId = ConnectionId;
+                PlayerTwo.ConnectionId = ConnectionId;
             }
         }
 
         public bool ContainsOnePlayer()
         {
-            if (PlayerOneId is not null && PlayerTwoId is null)
+            if (PlayerOne.Id is not null && PlayerTwo.Id is null)
             {
                 return true;
             }
-            else if (PlayerTwoId is not null && PlayerOneId is null)
+            else if (PlayerTwo.Id is not null && PlayerOne.Id is null)
             {
                 return true;
             }
@@ -111,7 +114,7 @@
         }
         public bool ContainsNoPlayers()
         {
-            if (PlayerOneId is null && PlayerTwoId is null)
+            if (PlayerOne.Id is null && PlayerTwo.Id is null)
             {
                 return true;
             }

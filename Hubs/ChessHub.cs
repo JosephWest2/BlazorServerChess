@@ -19,7 +19,7 @@ namespace BlazorServerChess.Hubs
         {
             await Clients.Client(connectionId).SendAsync("ReceiveErrorMessage", message);
         }
-        public async Task AddToGroup (string groupGuid, string userId)
+        public async Task AddToGroup (string groupGuid, string userId, string username)
         {
             
             await Groups.AddToGroupAsync(Context.ConnectionId, groupGuid);
@@ -28,12 +28,12 @@ namespace BlazorServerChess.Hubs
             
             if (groupGame.ContainsNoPlayers())
             {
-                groupGame.TryAddPlayer(userId, Context.ConnectionId);
+                groupGame.TryAddPlayer(userId, Context.ConnectionId, username);
                 await Clients.Group(groupGuid).SendAsync("ReceiveErrorMessage", "waiting for player to join");
             }
             else if (groupGame.ContainsOnePlayer())
             {
-                groupGame.TryAddPlayer(userId, Context.ConnectionId);
+                groupGame.TryAddPlayer(userId, Context.ConnectionId, username);
                 groupGame.game = new Game();
                 string groupGameJson = JsonSerializer.Serialize<ServerGame>(groupGame);
                 await Clients.Group(groupGuid).SendAsync("ReceiveInitializeGame", groupGameJson, "Game Started");

@@ -10,19 +10,33 @@ namespace BlazorServerChess.Data
 		public static ServerGame ServerGameFromJson(string json)
 		{
 			JObject jObject = JObject.Parse(json);
-			bool playerOneIsWhite = (int)jObject["PlayerOneColor"] == 0 ? true : false;
 
-			ServerGame serverGame = new ServerGame(playerOneIsWhite);
+			ServerGame serverGame = new ServerGame();
 
-			serverGame.PlayerOneId = (string)jObject["PlayerOneId"];
-			serverGame.PlayerOneConnectionId = (string)jObject["PlayerOneConnectionId"];
-			serverGame.PlayerTwoId = (string)jObject["PlayerTwoId"];
-			serverGame.PlayertwoConnectionId = (string)jObject["PlayerTwoConnectionId"];
+			string playerOneJson = jObject["PlayerOne"].ToString();
+			serverGame.PlayerOne = PlayerFromJson(playerOneJson);
+
+			string playerTwoJson = jObject["PlayerTwo"].ToString();
+			serverGame.PlayerTwo = PlayerFromJson(playerTwoJson);
+
 			serverGame.GroupGuid = (string)jObject["GroupGuid"];
 
 			string gameJson = jObject["game"].ToString();
 			serverGame.game = GameFromJson(gameJson);
 			return serverGame;
+		}
+
+		public static Player PlayerFromJson(string json)
+		{
+			Player player = new Player();
+			JObject jObject = JObject.Parse(json);
+
+			player.Id = (string)jObject["Id"];
+			player.ConnectionId = (string)jObject["ConnectionId"];
+			player.Username = (string)jObject["Username"];
+			player.Color = (int)jObject["Color"] == 0 ? ColorEnum.White : ColorEnum.Black;
+
+			return player;
 		}
 
 		public static Game GameFromJson(string json)

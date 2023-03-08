@@ -29,7 +29,7 @@
     public string? GameId { get; set; }
     private HubConnection? hubConnection;
     private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
-    public string? opponent { get; set; }
+    private Player? opponent;
     private string? errorMessage;
     public ColorEnum? PlayerColor;
     public Game? GameState = new Game();
@@ -53,8 +53,9 @@
         {
             errorMessage = messageString;
             ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
+            opponent = serverGame.PlayerOne.Id == UserState.userId ? serverGame.PlayerTwo : serverGame.PlayerOne;
             GameState = serverGame.game;
-            PlayerColor = UserState.userId == serverGame.PlayerOneId ? serverGame.PlayerOneColor : serverGame.PlayerTwoColor;
+            PlayerColor = UserState.userId == serverGame.PlayerOne.Id ? serverGame.PlayerOne.Color : serverGame.PlayerTwo.Color;
             InvokeAsync(StateHasChanged);
         });
         hubConnection.On<string>("ReceiveUpdateGame", (gameJson) =>
@@ -75,7 +76,7 @@
 
         if (GameId is not null)
         {
-            await hubConnection.SendAsync("AddToGroup", GameId, UserState.userId);
+            await hubConnection.SendAsync("AddToGroup", GameId, UserState.userId, UserState.username);
         }
 
     }
