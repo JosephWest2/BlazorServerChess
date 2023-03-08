@@ -9,6 +9,7 @@
                     <Chess></Chess>
                     <div class="columnContainer">
                         <Chat Messages="@messages"></Chat>
+                        <Timer></Timer>
                     </div>
                     
                 </div>
@@ -56,9 +57,9 @@
             errorMessage = message;
             InvokeAsync(StateHasChanged);
         });
-        hubConnection.On<string>("ReceiveInitializeGame", (serverGameJson) =>
+        hubConnection.On<string,string>("ReceiveInitializeGame", (serverGameJson, messageString) =>
         {
-            errorMessage = "Game started!";
+            errorMessage = messageString;
             ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
             GameState = serverGame.game;
             PlayerColor = UserState.userId == serverGame.PlayerOneId ? serverGame.PlayerOneColor : serverGame.PlayerTwoColor;
@@ -75,14 +76,6 @@
             ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
             GameState = serverGame.game;
             PlayerColor = null;
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string>("ReceiveRejoinGame", (serverGameJson) =>
-        {
-            errorMessage = "Game rejoined";
-            ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
-            GameState = serverGame.game;
-            PlayerColor = UserState.userId == serverGame.PlayerOneId ? serverGame.PlayerOneColor : serverGame.PlayerTwoColor;
             InvokeAsync(StateHasChanged);
         });
 

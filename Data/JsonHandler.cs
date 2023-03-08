@@ -18,6 +18,7 @@ namespace BlazorServerChess.Data
 			serverGame.PlayerOneConnectionId = (string)jObject["PlayerOneConnectionId"];
 			serverGame.PlayerTwoId = (string)jObject["PlayerTwoId"];
 			serverGame.PlayertwoConnectionId = (string)jObject["PlayerTwoConnectionId"];
+			serverGame.GroupGuid = (string)jObject["GroupGuid"];
 
 			string gameJson = jObject["game"].ToString();
 			serverGame.game = GameFromJson(gameJson);
@@ -34,6 +35,8 @@ namespace BlazorServerChess.Data
 			game.KingInCheck = (bool)jObject["KingInCheck"];
 			game.CheckMate = (bool)jObject["CheckMate"];
 			game.VictoryColor = (int)jObject["VictoryColor"] == 0 ? ColorEnum.White : ColorEnum.Black;
+			game.WhiteSeconds = (int)jObject["WhiteSeconds"];
+			game.BlackSeconds = (int)jObject["BlackSeconds"];
 
 			JToken moveJson = jObject["LastMove"];
 			if (moveJson.HasValues)

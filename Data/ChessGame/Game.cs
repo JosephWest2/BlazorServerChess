@@ -14,10 +14,14 @@ namespace BlazorServerChess.Data.ChessGame
 		public bool CheckMate { get; set; }
 		public Move LastMove { get; set; }
 		public ColorEnum VictoryColor { get; set; }
+		public int WhiteSeconds { get; set; }
+		public int BlackSeconds { get; set; }
 
 		public Game()
 		{
 			InitializeBoard();
+			WhiteSeconds = 100;
+			BlackSeconds = 100;
 			CurrentTurnColor = ColorEnum.White;
 		}
 

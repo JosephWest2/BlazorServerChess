@@ -1,5 +1,6 @@
 ﻿using BlazorServerChess.Data;
 using BlazorServerChess.Data.ChessGame;
+using BlazorServerChess.Data.Services;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 using System.Text.Json;
@@ -22,7 +23,7 @@ namespace BlazorServerChess.Hubs
         {
             
             await Groups.AddToGroupAsync(Context.ConnectionId, groupGuid);
-            ServerGames.TryAdd(groupGuid, new ServerGame());
+            ServerGames.TryAdd(groupGuid, new ServerGame(groupGuid));
             ServerGame groupGame = ServerGames[groupGuid];
             
             if (groupGame.ContainsNoPlayers())
@@ -33,14 +34,13 @@ namespace BlazorServerChess.Hubs
             else if (groupGame.ContainsOnePlayer())
             {
                 groupGame.TryAddPlayer(userId, Context.ConnectionId);
-                await Clients.Group(groupGuid).SendAsync("ReceiveErrorMessage", "Game Started");
                 groupGame.game = new Game();
                 string groupGameJson = JsonSerializer.Serialize<ServerGame>(groupGame);
-                await Clients.Group(groupGuid).SendAsync("ReceiveInitializeGame", groupGameJson);
+                await Clients.Group(groupGuid).SendAsync("ReceiveInitializeGame", groupGameJson, "Game Started");
             } else if (groupGame.PlayerIsInGame(userId))
             {
                 string groupGameJson = JsonSerializer.Serialize<ServerGame>(groupGame);
-                await Clients.Client(Context.ConnectionId).SendAsync("ReceiveRejoinGame", groupGameJson);
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceiveInitializeGame", groupGameJson, "Game Rejoined");
             }
             else
             {

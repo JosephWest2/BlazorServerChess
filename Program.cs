@@ -1,4 +1,5 @@
 using BlazorServerChess.Data;
+using BlazorServerChess.Data.Services;
 using BlazorServerChess.Hubs;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -13,6 +14,8 @@ builder.Services.AddResponseCompression(opts =>
     opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
         new[] { "application/octet-stream" });
 });
+
+builder.Services.AddSingleton<GameClockService>();
 
 var app = builder.Build();
 
