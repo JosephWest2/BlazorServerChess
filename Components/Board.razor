@@ -36,6 +36,14 @@
 			
 		}
 	}
+    @if(GameState.CheckMate)
+    {
+        <div class="checkmate">Checkmate! @GameState.VictoryColor wins</div>
+    }
+    @if (GameState.TimeOut)
+    {
+        <div class="timeout">Time Out! @GameState.VictoryColor wins</div>
+    }
 </div>
 
 @code {
@@ -53,13 +61,20 @@
     public int? selected { get; set; }
     HashSet<int> possibleMoves = new HashSet<int>();
 
+    protected override Task OnParametersSetAsync()
+    {
+        if (GameState.CheckMate || GameState.TimeOut)
+        {
+            selected = null;
+        }
+        return base.OnParametersSetAsync();
+    }
+
     public async Task HandleClick(MouseEventArgs e, int i)
     {
-        if (PlayerColor is null || GameState.CurrentTurnColor != PlayerColor)
+        if (PlayerColor is null || GameState.CurrentTurnColor != PlayerColor || GameState.CheckMate || GameState.TimeOut)
         {
-            Console.WriteLine("wrong color");
-            Console.WriteLine(GameState.CurrentTurnColor);
-            Console.WriteLine(PlayerColor);
+            Console.WriteLine("move not available");
             return;
         }
         if (selected == null)

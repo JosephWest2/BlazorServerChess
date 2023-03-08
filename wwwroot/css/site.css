@@ -91,6 +91,71 @@ h3 {
     display: flex;
     flex-direction: column;
 }
+.color-blue {
+    color: hsl(205, 31%, 50%);
+}
+
+.timerContainer {
+    padding: 1rem;
+    background-color: hsl(0, 0%, 41%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: clamp(20rem, 23%, 25rem);
+    height: clamp(10rem, 23rem, 15rem);
+    border-radius: 0.2rem;
+    margin: 0.8rem;
+    text-align: center;
+    font-size: 3em;
+}
+.timerValue {
+    color: hsl(205, 31%, 35%);
+}
+.whiteTime {
+    margin: 0.5rem;
+    width: 90%;
+    height: 40%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.blackTime {
+    margin: 0.5rem;
+    width: 90%;
+    height: 40%;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+@media screen and (max-width:1132px) {
+    .timerContainer {
+        width: 50rem;
+        max-width: 100%;
+        flex-direction: row;
+        margin: 0;
+        height: auto;
+    }
+    .whiteTime {
+        width: 45%;
+    }
+    .blackTime {
+        width: 45%;
+    }
+    .columnContainer {
+        width: 100%;
+    }
+    .rowContainer {
+        align-items: center;
+        justify-content: center;
+    }
+    .columnContainer{
+        align-items: center;
+        justify-content: center;
+    }
+}
 
 
 

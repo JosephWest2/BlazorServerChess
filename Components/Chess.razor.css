@@ -1,1 +1,7 @@
-﻿
+﻿.gameContainer {
+    width: 100%;
+    max-width: 50rem;
+}
+.nameContainer {
+    width: 100%;
+}

@@ -1,6 +1,27 @@
-﻿<Board GameBoard="game.Board"></Board>
+﻿<div class="columnContainer gameContainer">
+	@if (PlayerColor == ColorEnum.White)
+	{
+		<div class="nameContainer"><h4><span class="color-blue">(You)</span> @UserState.username</h4></div>
+		<Board GameBoard="game.Board"></Board>
+		<div class="nameContainer"><h4><span class="color-blue">(Opponent)</span> @opponent</h4></div>
+	}
+	else
+	{
+		<div class="nameContainer"><h4><span class="color-blue">(Opponent)</span> @opponent</h4></div>
+		<Board GameBoard="game.Board"></Board>
+		<div class="nameContainer"><h4><span class="color-blue">(You)</span> @UserState.username</h4></div>
+	}
+	
+</div>
+
 
 @code {
 	[CascadingParameter]
+	public UserStateProvider UserState { get; set; }
+	[CascadingParameter]
 	public Game? game { get; set; }
+	[CascadingParameter]
+	public ColorEnum? PlayerColor { get; set; }
+	[Parameter]
+	public string? opponent { get; set; }
 }

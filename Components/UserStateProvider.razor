@@ -1,6 +1,17 @@
 @inject ProtectedSessionStorage ProtectedSessionStore
 
-@if (isLoaded)
+
+@if (username is null)
+{
+    <div class="Login">
+        <div class="LoginCard">
+            <h2 class="loginh2">Enter Your Name</h2>
+            <input class="loginInput" @bind="usernameInput" @bind:event="oninput" @onkeydown="@Enter" />
+            <button class="btn loginButton" @onclick="@SetUsername">Submit</button>
+        </div>
+    </div>
+}
+else if (isLoaded)
 {
     <CascadingValue Value="@this">
         @ChildContent
@@ -20,6 +31,7 @@ else
         public RenderFragment? ChildContent { get; set; }
 
         public string? username { get; set; }
+        private string? usernameInput;
         public string? userId { get; set; }
 
         protected override async Task OnInitializedAsync()
@@ -29,6 +41,7 @@ else
             {
                 username = result.Value["username"];
                 userId = result.Value["userId"];
+                
             }
             else
             {
@@ -45,4 +58,21 @@ else
             dict["userId"] = userId;
             await ProtectedSessionStore.SetAsync("User", dict);
         }
+
+    private async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await SetUsername();
+        }
     }
+
+    private async Task SetUsername()
+    {
+        if (usernameInput != null)
+        {
+            username = usernameInput;
+            await SaveChangesAsync();
+        }
+    }
+}

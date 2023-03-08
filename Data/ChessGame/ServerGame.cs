@@ -4,9 +4,11 @@
 	{
 		public string PlayerOneId { get; set; }
         public string PlayerOneConnectionId { get; set; }
+        public string PlayerOneUsername { get; set; }
 		public ColorEnum PlayerOneColor { get; }
 		public string PlayerTwoId { get; set; }
         public string PlayertwoConnectionId { get; set; }
+        public string PlayerTwoUsername { get; set; }
 		public ColorEnum PlayerTwoColor { get; }
 		public Game game { get; set; }
         public string GroupGuid { get; set; }
@@ -124,6 +126,7 @@
         }
         private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
         {
+
             if (game is null || game.LastMove is null)
             {
                 return;
@@ -136,8 +139,16 @@
             {
                 game.BlackSeconds -= 1;
             }
-            if (game.WhiteSeconds == 0 || game.BlackSeconds == 0)
+            if (game.WhiteSeconds == 0)
             {
+                game.TimeOut = true;
+                game.VictoryColor = ColorEnum.Black;
+                _timer.Dispose();
+            }
+            if (game.BlackSeconds == 0)
+            {
+                game.TimeOut = true;
+                game.VictoryColor = ColorEnum.White;
                 _timer.Dispose();
             }
         }

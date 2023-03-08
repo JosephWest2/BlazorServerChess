@@ -37,6 +37,7 @@ namespace BlazorServerChess.Data
 			game.VictoryColor = (int)jObject["VictoryColor"] == 0 ? ColorEnum.White : ColorEnum.Black;
 			game.WhiteSeconds = (int)jObject["WhiteSeconds"];
 			game.BlackSeconds = (int)jObject["BlackSeconds"];
+			game.TimeOut = (bool)jObject["TimeOut"];
 
 			JToken moveJson = jObject["LastMove"];
 			if (moveJson.HasValues)

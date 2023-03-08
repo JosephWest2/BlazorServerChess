@@ -6,10 +6,12 @@
         <CascadingValue Value="@GameId">
             <CascadingValue Value="@hubConnection">
                 <div class="rowContainer">
-                    <Chess></Chess>
+                    
+                    <Chess opponent="@opponent"></Chess>
                     <div class="columnContainer">
-                        <Chat Messages="@messages"></Chat>
+                        <h2 style="color:red; margin: 0.8rem;">@errorMessage</h2>
                         <Timer></Timer>
+                        <Chat Messages="@messages"></Chat>
                     </div>
                     
                 </div>
@@ -18,16 +20,6 @@
     </CascadingValue>
 </CascadingValue>
 
-@if (UserState.username is null)
-{
-    <div class="Login">
-        <div class="LoginCard">
-            <h2 class="loginh2">Enter Your Name</h2>
-            <input class="loginInput" @bind="usernameInput" @bind:event="oninput" @onkeydown="@Enter" />
-            <button class="btn loginButton" @onclick="@SetUsername">Submit</button>
-        </div>
-    </div>
-}
 
 
 @code {
@@ -37,7 +29,7 @@
     public string? GameId { get; set; }
     private HubConnection? hubConnection;
     private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
-    private string? usernameInput;
+    public string? opponent { get; set; }
     private string? errorMessage;
     public ColorEnum? PlayerColor;
     public Game? GameState = new Game();
@@ -86,22 +78,5 @@
             await hubConnection.SendAsync("AddToGroup", GameId, UserState.userId);
         }
 
-    }
-
-    private async Task Enter(KeyboardEventArgs e)
-    {
-        if (e.Code == "Enter" || e.Code == "NumpadEnter")
-        {
-            await SetUsername();
-        }
-    }
-
-    private async Task SetUsername()
-    {
-        if (usernameInput != null)
-        {
-            UserState.username = usernameInput;
-            await UserState.SaveChangesAsync();
-        }
     }
 }

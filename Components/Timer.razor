@@ -1,32 +1,60 @@
-﻿<h3>White</h3>
-<p>@WhiteTime.ToString()</p>
-<h3>Black</h3>
-<p>@BlackTime.ToString()</p>
+﻿
+<div class="timerContainer">
+    <div class="whiteTime">
+        <div class="timerValue">@WhiteTime.ToString().Remove(0,3)</div>
+    </div>
+    <div class="blackTime">
+        <div class="timerValue">@BlackTime.ToString().Remove(0,3)</div>
+    </div>
+</div>
 
 @code {
-[CascadingParameter]
-public Game GameState { get; set; }
-public TimeSpan WhiteTime { get; set; }
-public TimeSpan BlackTime { get; set; }
-System.Timers.Timer _timer;
-
-protected override async Task OnInitializedAsync()
-{
-_timer = new System.Timers.Timer(1000.0);
-_timer.Elapsed += OnTimedEvent;
-_timer.AutoReset = true;
-_timer.Enabled = true;
-}
-private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
-{
-if (GameState.CurrentTurnColor == ColorEnum.White)
-{
-    WhiteTime -= new TimeSpan(0, 0, 1);
-}
-else
-{
-    BlackTime -= new TimeSpan(0, 0, 1);
-}
-InvokeAsync(StateHasChanged);
-}
+    [CascadingParameter]
+    public Game GameState { get; set; }
+    public TimeSpan WhiteTime { get; set; }
+    public TimeSpan BlackTime { get; set; }
+    System.Timers.Timer _timer;
+    protected override async Task OnInitializedAsync()
+    {
+        _timer = new System.Timers.Timer(1000.0);
+        _timer.Elapsed += OnTimedEvent;
+        _timer.AutoReset = true;
+        _timer.Enabled = true;
     }
+    protected override async Task OnParametersSetAsync()
+    {
+        WhiteTime = new TimeSpan(0, 0, GameState.WhiteSeconds);
+        BlackTime = new TimeSpan(0, 0, GameState.BlackSeconds);
+    }
+    private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
+    {
+        if (GameState.LastMove is null)
+        {
+            return;
+        }
+        if (WhiteTime.Ticks == 0)
+        {
+            GameState.VictoryColor = ColorEnum.Black;
+            GameState.TimeOut = true;
+            _timer.Enabled = false;
+            _timer.Dispose();
+        }
+        else if (BlackTime.Ticks == 0)
+        {
+            GameState.VictoryColor = ColorEnum.White;
+            GameState.TimeOut = true;
+            _timer.Enabled = false;
+            _timer.Dispose();
+        }
+        else if (GameState.CurrentTurnColor == ColorEnum.White)
+        {
+            WhiteTime -= new TimeSpan(0, 0, 1);
+        }
+        else
+        {
+            BlackTime -= new TimeSpan(0, 0, 1);
+        }
+        
+        InvokeAsync(StateHasChanged);
+    }
+}

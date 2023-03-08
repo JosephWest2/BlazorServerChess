@@ -12,6 +12,7 @@ namespace BlazorServerChess.Data.ChessGame
 		public ColorEnum CurrentTurnColor { get; set; }
 		public bool KingInCheck { get; set; }
 		public bool CheckMate { get; set; }
+		public bool TimeOut { get; set; }
 		public Move LastMove { get; set; }
 		public ColorEnum VictoryColor { get; set; }
 		public int WhiteSeconds { get; set; }
@@ -20,8 +21,8 @@ namespace BlazorServerChess.Data.ChessGame
 		public Game()
 		{
 			InitializeBoard();
-			WhiteSeconds = 100;
-			BlackSeconds = 100;
+			WhiteSeconds = 1 * 10;
+			BlackSeconds = 1 * 10;
 			CurrentTurnColor = ColorEnum.White;
 		}
 
