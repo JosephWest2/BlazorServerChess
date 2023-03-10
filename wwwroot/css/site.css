@@ -96,6 +96,9 @@ h3 {
 .color-blue {
     color: hsl(205, 31%, 50%);
 }
+.color-blue-light {
+    color: hsl(204, 32%, 67%);
+}
 
 .timerContainer {
     padding: 1rem;
