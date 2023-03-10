@@ -1,83 +1,41 @@
-﻿@page "/Create/{GameId?}"
+﻿@page "/Create"
 @inject NavigationManager Navigation
 
-<CascadingValue Value="@PlayerColor">
-    <CascadingValue Value="@GameState">
-        <CascadingValue Value="@GameId">
-            <CascadingValue Value="@hubConnection">
-                <div class="rowContainer">
-                    
-                    <Chess opponent="@opponent"></Chess>
-                    <div class="columnContainer">
-                        <h2 style="color:red; margin: 0.8rem;">@errorMessage</h2>
-                        <Timer></Timer>
-                        <Chat Messages="@messages"></Chat>
-                    </div>
-                    
-                </div>
-            </CascadingValue>
-        </CascadingValue>
-    </CascadingValue>
-</CascadingValue>
 
+@if (gameGuid is null)
+{
 
+    <div class="rowContainer" style="margin-top:4rem; justify-content: center;">
+        <div class="LoginCard" style="padding-bottom: 2rem;">
+            <h2 class="loginh2">Select Time Control</h2>
+            <div class="rowContainer">
+                <button @onclick="() => CreateGameS(3)" class="btn timeButton">10 Min</button>
+                <button @onclick="() => CreateGameS(3)" class="btn timeButton">5 Min</button>
+                <button @onclick="() => CreateGameS(3)" class="btn timeButton">3 Min</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="rowContainer" style="margin-top:4rem; justify-content: center;">
+        <div class="LoginCard" style="padding-bottom: 2rem;">
+            <h2 class="loginh2">Send this id to your opponent:</h2>
+            <h2 class="loginh2" style="color:yellow;">@gameGuid</h2>
+            <p>When ready, click the button below to go to the game.</p>
+            <a class="btn" href="/@gameGuid">Join Game</a>
+        </div>
+    </div>
+}
 
 @code {
-    [CascadingParameter]
-    private UserStateProvider UserState { get; set; }
-    [Parameter]
-    public string? GameId { get; set; }
-    private HubConnection? hubConnection;
-    private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
-    private Player? opponent;
-    private string? errorMessage;
-    public ColorEnum? PlayerColor;
-    public Game? GameState = new Game();
-    protected override async Task OnInitializedAsync()
+    private int? timeControl = null;
+    private string? gameGuid = null;
+
+    private void CreateGameS(int n)
     {
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(Navigation.ToAbsoluteUri("/ChessHub"))
-            .Build();
-
-        hubConnection.On<string, string>("ReceiveMessage", (username, message) =>
-        {
-            messages.Add(Tuple.Create(username, message));
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string>("ReceiveErrorMessage", (message) =>
-        {
-            errorMessage = message;
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string,string>("ReceiveInitializeGame", (serverGameJson, messageString) =>
-        {
-            errorMessage = messageString;
-            ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
-            opponent = serverGame.PlayerOne.Id == UserState.userId ? serverGame.PlayerTwo : serverGame.PlayerOne;
-            GameState = serverGame.game;
-            PlayerColor = UserState.userId == serverGame.PlayerOne.Id ? serverGame.PlayerOne.Color : serverGame.PlayerTwo.Color;
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string>("ReceiveUpdateGame", (gameJson) =>
-        {
-            GameState = JsonHandler.GameFromJson(gameJson);
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string>("ReceiveAddSpectator", (serverGameJson) =>
-        {
-            errorMessage = "You are spectating";
-            ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
-            GameState = serverGame.game;
-            PlayerColor = null;
-            InvokeAsync(StateHasChanged);
-        });
-
-        await hubConnection.StartAsync();
-
-        if (GameId is not null)
-        {
-            await hubConnection.SendAsync("AddToGroup", GameId, UserState.userId, UserState.username);
-        }
+        gameGuid = Guid.NewGuid().ToString();
+        timeControl = n;
+    }
 
     }
-}

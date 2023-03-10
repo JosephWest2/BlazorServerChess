@@ -1,83 +1,15 @@
-﻿@page "/Join/{GameId?}"
+﻿@page "/Join/"
 @inject NavigationManager Navigation
 
-<CascadingValue Value="@PlayerColor">
-    <CascadingValue Value="@GameState">
-        <CascadingValue Value="@GameId">
-            <CascadingValue Value="@hubConnection">
-                <div class="rowContainer">
-                    
-                    <Chess opponent="@opponent"></Chess>
-                    <div class="columnContainer">
-                        <h2 style="color:red; margin: 0.8rem;">@errorMessage</h2>
-                        <Timer></Timer>
-                        <Chat Messages="@messages"></Chat>
-                    </div>
-                    
-                </div>
-            </CascadingValue>
-        </CascadingValue>
-    </CascadingValue>
-</CascadingValue>
-
-
+<div class="rowContainer" style="margin-top:4rem; justify-content: center;">
+    <div class="LoginCard" style="padding-bottom: 2rem;">
+        <h2 class="loginh2">Enter Game Id</h2>
+        <input @bind="gameGuid" />
+        <a class="btn" href="/@gameGuid">Join Game</a>
+    </div>
+</div>
 
 @code {
-    [CascadingParameter]
-    private UserStateProvider UserState { get; set; }
-    [Parameter]
-    public string? GameId { get; set; }
-    private HubConnection? hubConnection;
-    private List<Tuple<string, string>> messages = new List<Tuple<string, string>>();
-    private Player? opponent;
-    private string? errorMessage;
-    public ColorEnum? PlayerColor;
-    public Game? GameState = new Game();
-    protected override async Task OnInitializedAsync()
-    {
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(Navigation.ToAbsoluteUri("/ChessHub"))
-            .Build();
+    private string? gameGuid = null;
 
-        hubConnection.On<string, string>("ReceiveMessage", (username, message) =>
-        {
-            messages.Add(Tuple.Create(username, message));
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string>("ReceiveErrorMessage", (message) =>
-        {
-            errorMessage = message;
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string,string>("ReceiveInitializeGame", (serverGameJson, messageString) =>
-        {
-            errorMessage = messageString;
-            ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
-            opponent = serverGame.PlayerOne.Id == UserState.userId ? serverGame.PlayerTwo : serverGame.PlayerOne;
-            GameState = serverGame.game;
-            PlayerColor = UserState.userId == serverGame.PlayerOne.Id ? serverGame.PlayerOne.Color : serverGame.PlayerTwo.Color;
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string>("ReceiveUpdateGame", (gameJson) =>
-        {
-            GameState = JsonHandler.GameFromJson(gameJson);
-            InvokeAsync(StateHasChanged);
-        });
-        hubConnection.On<string>("ReceiveAddSpectator", (serverGameJson) =>
-        {
-            errorMessage = "You are spectating";
-            ServerGame serverGame = JsonHandler.ServerGameFromJson(serverGameJson);
-            GameState = serverGame.game;
-            PlayerColor = null;
-            InvokeAsync(StateHasChanged);
-        });
-
-        await hubConnection.StartAsync();
-
-        if (GameId is not null)
-        {
-            await hubConnection.SendAsync("AddToGroup", GameId, UserState.userId, UserState.username);
-        }
-
-    }
 }
