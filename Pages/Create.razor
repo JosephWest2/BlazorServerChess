@@ -9,9 +9,9 @@
         <div class="LoginCard" style="padding-bottom: 2rem;">
             <h2 class="loginh2">Select Time Control</h2>
             <div class="rowContainer">
-                <button @onclick="() => CreateGameS(3)" class="btn timeButton">10 Min</button>
-                <button @onclick="() => CreateGameS(3)" class="btn timeButton">5 Min</button>
-                <button @onclick="() => CreateGameS(3)" class="btn timeButton">3 Min</button>
+                <button @onclick="() => CreateGame(10.ToString())" class="btn timeButton">10 Min</button>
+                <button @onclick="() => CreateGame(5.ToString())" class="btn timeButton">5 Min</button>
+                <button @onclick="() => CreateGame(3.ToString())" class="btn timeButton">3 Min</button>
             </div>
         </div>
     </div>
@@ -33,10 +33,10 @@ else
     private int? timeControl = null;
     private string? gameGuid = null;
 
-    private void CreateGameS(int n)
+    private void CreateGame(string t)
     {
-        gameGuid = Guid.NewGuid().ToString();
-        timeControl = n;
+        string guid = Guid.NewGuid().ToString();
+        gameGuid = guid + "*" + t;
     }
 
     }

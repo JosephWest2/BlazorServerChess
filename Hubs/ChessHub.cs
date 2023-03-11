@@ -34,7 +34,23 @@ namespace BlazorServerChess.Hubs
             else if (groupGame.ContainsOnePlayer())
             {
                 groupGame.TryAddPlayer(userId, Context.ConnectionId, username);
-                groupGame.game = new Game();
+                if (groupGuid.Length >= 2)
+                {
+                    int i = groupGuid.LastIndexOf('*');
+                    string? t = null;
+                    int n = 5;
+                    if (i < groupGuid.Length - 1)
+                    {
+                        Console.WriteLine(i);
+                        t = groupGuid.Substring(i + 1);
+                        n = Int32.Parse(t);
+                    }
+                    groupGame.game = new Game(n);
+                }
+                else
+                {
+                    groupGame.game = new Game();
+                }
                 string groupGameJson = JsonSerializer.Serialize<ServerGame>(groupGame);
                 await Clients.Group(groupGuid).SendAsync("ReceiveInitializeGame", groupGameJson, "Game Started");
             } else if (groupGame.PlayerIsInGame(userId))

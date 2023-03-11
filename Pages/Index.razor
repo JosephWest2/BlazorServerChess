@@ -7,7 +7,8 @@
         <CascadingValue Value="@GameId">
             <CascadingValue Value="@hubConnection">
                 <div class="rowContainer">
-                    
+
+
                     <Chess opponent="@opponent"></Chess>
                     <div class="columnContainer">
                         <h2 style="color:red; margin: 0.8rem;">@errorMessage</h2>
@@ -33,7 +34,7 @@
     private Player? opponent;
     private string? errorMessage;
     public ColorEnum? PlayerColor;
-    public Game? GameState = new Game();
+    public Game? GameState = new Game(0);
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()

@@ -1,27 +1,34 @@
 ﻿<div class="columnContainer gameContainer">
-	@if (PlayerColor == ColorEnum.White)
-	{
-		<div class="nameContainer"><h4><span class="color-blue">(You)</span> @UserState.username</h4></div>
-		<Board GameBoard="game.Board"></Board>
-		<div class="nameContainer"><h4><span class="color-blue">(Opponent)</span> @opponent?.Username</h4></div>
-	}
-	else
-	{
-		<div class="nameContainer"><h4><span class="color-blue">(Opponent)</span> @opponent?.Username</h4></div>
-		<Board GameBoard="game.Board"></Board>
-		<div class="nameContainer"><h4><span class="color-blue">(You)</span> @UserState.username</h4></div>
-	}
-	
+    <h4 class="color-blue-light">@(GameId is not null ? "Game Id: " : "") @GameId</h4>
+    @if (PlayerColor == ColorEnum.White)
+    {
+        <div class="nameContainer"><h4><span class="color-blue">(You)</span> @UserState.username</h4></div>
+        <Board GameBoard="game.Board"></Board>
+        <div class="nameContainer"><h4><span class="color-blue">(Opponent)</span> @opponent?.Username</h4></div>
+    }
+    else if (PlayerColor == ColorEnum.Black)
+    {
+        <div class="nameContainer"><h4><span class="color-blue">(Opponent)</span> @opponent?.Username</h4></div>
+        <Board GameBoard="game.Board"></Board>
+        <div class="nameContainer"><h4><span class="color-blue">(You)</span> @UserState.username</h4></div>
+    }
+    else
+    {
+        <Board GameBoard="game.Board"></Board>
+    }
+
 </div>
 
 
 @code {
-	[CascadingParameter]
-	public UserStateProvider UserState { get; set; }
-	[CascadingParameter]
-	public Game? game { get; set; }
-	[CascadingParameter]
-	public ColorEnum? PlayerColor { get; set; }
-	[Parameter]
-	public Player? opponent { get; set; }
-}
+    [CascadingParameter]
+    public string? GameId { get; set; } 
+        [CascadingParameter]
+        public UserStateProvider UserState { get; set; }
+        [CascadingParameter]
+        public Game? game { get; set; }
+        [CascadingParameter]
+        public ColorEnum? PlayerColor { get; set; }
+        [Parameter]
+        public Player? opponent { get; set; }
+    }

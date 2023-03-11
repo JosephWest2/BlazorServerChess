@@ -21,13 +21,20 @@ namespace BlazorServerChess.Data.ChessGame
 		public Game()
 		{
 			InitializeBoard();
-			WhiteSeconds = 1 * 10;
-			BlackSeconds = 1 * 10;
+			WhiteSeconds = 5 * 60;
+			BlackSeconds = 5 * 60;
 			CurrentTurnColor = ColorEnum.White;
 		}
+        public Game(int minutes)
+        {
+            InitializeBoard();
+            WhiteSeconds = minutes * 60;
+            BlackSeconds = minutes * 60;
+            CurrentTurnColor = ColorEnum.White;
+        }
 
 
-		private void InitializeBoard()
+        private void InitializeBoard()
 		{
 			Board = new List<IPiece>();
 			Board.Add(new Rook(this, ColorEnum.White, 0));
