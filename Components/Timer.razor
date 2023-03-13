@@ -28,7 +28,7 @@
     }
     private void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
     {
-        if (GameState.LastMove is null)
+        if (GameState.LastMove is null || GameState.CheckMate)
         {
             return;
         }

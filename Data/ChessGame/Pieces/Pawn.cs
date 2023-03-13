@@ -32,25 +32,30 @@
 				{
 					result.Add(TileId - 7);
 				}
+
+				// enpassant
+				
 			}
 			else
 			{
-				if (TileId + 8 >= 0 && _game.Board[TileId + 8] == null)
+				if (TileId + 8 < 64 && _game.Board[TileId + 8] == null)
 				{
 					result.Add(TileId + 8);
-					if (TileId + 16 >= 0 && HasMoved == false && _game.Board[TileId + 16] == null)
+					if (TileId + 16 < 64 && HasMoved == false && _game.Board[TileId + 16] == null)
 					{
 						result.Add(TileId + 16);
 					}
 				}
-				if (TileId % 8 > 0 && _game.Board[TileId + 9]?.Color != Color && _game.Board[TileId + 9] != null)
-				{
-					result.Add(TileId + 9);
-				}
-				if (TileId % 8 < 7 && _game.Board[TileId + 7]?.Color != Color && _game.Board[TileId + 7] != null)
+				if (TileId % 8 > 0 && _game.Board[TileId + 7]?.Color != Color && _game.Board[TileId + 7] != null)
 				{
 					result.Add(TileId + 7);
 				}
+				if (TileId % 8 < 7 && _game.Board[TileId + 9]?.Color != Color && _game.Board[TileId + 9] != null)
+				{
+					result.Add(TileId + 9);
+				}
+
+				// enpassant
 			}
 			return result;
 		}

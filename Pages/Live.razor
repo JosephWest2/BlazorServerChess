@@ -1,4 +1,4 @@
-﻿@page "/{GameId?}"
+﻿@page "/live/{GameId?}"
 @inject NavigationManager Navigation
 
 
@@ -7,7 +7,6 @@
         <CascadingValue Value="@GameId">
             <CascadingValue Value="@hubConnection">
                 <NavBar></NavBar>
-                <h4 class="color-blue-light">Welcome to Chess Online! Click Create Game to get started!</h4>
                 <div class="rowContainer">
 
 
