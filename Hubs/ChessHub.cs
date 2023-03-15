@@ -26,6 +26,7 @@ namespace BlazorServerChess.Hubs
             ServerGames.TryAdd(groupGuid, new ServerGame(groupGuid));
             ServerGame groupGame = ServerGames[groupGuid];
             
+
             if (groupGame.ContainsNoPlayers())
             {
                 groupGame.TryAddPlayer(userId, Context.ConnectionId, username);
@@ -53,7 +54,8 @@ namespace BlazorServerChess.Hubs
                 }
                 string groupGameJson = JsonSerializer.Serialize<ServerGame>(groupGame);
                 await Clients.Group(groupGuid).SendAsync("ReceiveInitializeGame", groupGameJson, "Game Started");
-            } else if (groupGame.PlayerIsInGame(userId))
+            }
+            else if (groupGame.PlayerIsInGame(userId))
             {
                 string groupGameJson = JsonSerializer.Serialize<ServerGame>(groupGame);
                 await Clients.Client(Context.ConnectionId).SendAsync("ReceiveInitializeGame", groupGameJson, "Game Rejoined");
@@ -71,5 +73,12 @@ namespace BlazorServerChess.Hubs
             string gameJson = JsonSerializer.Serialize<Game>(groupGame.game);
             await Clients.Group(groupGuid).SendAsync("ReceiveUpdateGame", gameJson);
         }
-	}
+        public async Task HandlePromotion (string groupGuid, Promotion promotion)
+        {
+            ServerGame groupGame = ServerGames[groupGuid];
+            groupGame.game.HandlePromotion(promotion);
+            string gameJson = JsonSerializer.Serialize<Game>(groupGame.game);
+            await Clients.Group(groupGuid).SendAsync("ReceiveUpdateGame", gameJson);
+        }
+    }
 }

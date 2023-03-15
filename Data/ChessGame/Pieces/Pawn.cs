@@ -34,7 +34,17 @@
 				}
 
 				// enpassant
-				
+				if (TileId > 23 && TileId < 32)
+				{
+					if (_game.Board[TileId - 1]?.PieceType == PieceEnum.Pawn && _game.LastMove.EndingTileId == TileId - 1 && _game.Board[TileId - 1]?.Color != Color)
+					{
+						result.Add(TileId - 9);
+					}
+					else if (_game.Board[TileId + 1]?.PieceType == PieceEnum.Pawn && _game.LastMove.EndingTileId == TileId + 1 && _game.Board[TileId - 1]?.Color != Color)
+					{
+						result.Add(TileId - 7);
+					}
+				}
 			}
 			else
 			{
@@ -56,6 +66,18 @@
 				}
 
 				// enpassant
+
+				if (TileId > 31 && TileId < 40)
+				{
+					if (_game.Board[TileId - 1]?.PieceType == PieceEnum.Pawn && _game.LastMove.EndingTileId == TileId - 1 && _game.Board[TileId - 1]?.Color != Color)
+					{
+						result.Add(TileId + 7);
+					}
+					else if (_game.Board[TileId + 1]?.PieceType == PieceEnum.Pawn && _game.LastMove.EndingTileId == TileId + 1 && _game.Board[TileId - 1]?.Color != Color)
+					{
+						result.Add(TileId + 9);
+					}
+				}
 			}
 			return result;
 		}
@@ -88,6 +110,13 @@
 			return result;
 		}
 
-		
+		public static bool IsEnpassanting(Move move, Game game)
+		{
+			if (game.Board[move.EndingTileId] == null && move.EndingTileId != move.EndingTileId + 8 || game.Board[move.EndingTileId] == null && move.EndingTileId != move.EndingTileId - 8)
+			{
+				return true;
+			}
+			return false;
+		}
 	}
 }

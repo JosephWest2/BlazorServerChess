@@ -40,3 +40,17 @@
     align-items: center;
     z-index: 101;
 }
+.promotion {
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    background-color: hsl(0, 0%, 0%, 0.65);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    z-index: 101;
+}

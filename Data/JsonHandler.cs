@@ -42,7 +42,6 @@ namespace BlazorServerChess.Data
 		public static Game GameFromJson(string json)
 		{
 			Game game = new Game();
-			Console.WriteLine(json);
 
 			JObject jObject = JObject.Parse(json);
 			game.CurrentTurnColor = (int)jObject["CurrentTurnColor"] == 0 ? ColorEnum.White : ColorEnum.Black;

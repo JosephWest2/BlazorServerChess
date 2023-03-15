@@ -2,6 +2,8 @@
 using BlazorServerChess.Data.ChessGame.Pieces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Xml.Linq;
 
 namespace BlazorServerChess.Data.ChessGame
 {
@@ -176,6 +178,25 @@ namespace BlazorServerChess.Data.ChessGame
 				King castlingKing = (King)movingPiece;
 				castlingKing.Castle(move);
 			}
+			else if (movingPiece.PieceType == PieceEnum.Pawn && movingPiece.HasMoved && Pawn.IsEnpassanting(move, this))
+			{
+				Console.WriteLine("WTF");
+				Board[move.StartingTileId] = null;
+				Board[move.EndingTileId] = movingPiece;
+				IPiece? capturedPawn = null;
+				if (move.EndingTileId > move.StartingTileId)
+				{
+					capturedPawn = Board[move.EndingTileId - 8];
+                    Board[move.EndingTileId - 8] = null;
+				}
+				else
+				{
+                    capturedPawn = Board[move.EndingTileId + 8];
+                    Board[move.EndingTileId + 8] = null;
+                }
+				movingPiece.TileId = move.EndingTileId;
+                Pieces.Remove(capturedPawn);
+            }
 			else
 			{
 				movingPiece.MoveToSquare(move.EndingTileId);
@@ -197,6 +218,61 @@ namespace BlazorServerChess.Data.ChessGame
 			}
 			LastMove = move;
 		}
+
+        public void HandlePromotion(Promotion promotion)
+		{
+            IPiece? movingPiece = Board[promotion.StartingTileId];
+            if (movingPiece is null)
+            {
+                return;
+            }
+			IPiece? capturedPiece = Board[promotion.EndingTileId];
+			if (capturedPiece is not null)
+			{
+				Pieces.Remove(capturedPiece);
+			}
+			IPiece? newPiece = null;
+			switch (promotion.promotionResult)
+			{
+				case PieceEnum.Queen:
+					newPiece = new Queen(this, movingPiece.Color, promotion.EndingTileId);
+					break;
+                case PieceEnum.Rook:
+                    newPiece = new Rook(this, movingPiece.Color, promotion.EndingTileId);
+                    break;
+                case PieceEnum.Bishop:
+                    newPiece = new Bishop(this, movingPiece.Color, promotion.EndingTileId);
+                    break;
+                case PieceEnum.Knight:
+                    newPiece = new Knight(this, movingPiece.Color, promotion.EndingTileId);
+                    break;
+            }
+            Pieces.Remove(movingPiece);
+            Pieces.Add(newPiece);
+			Board[promotion.StartingTileId] = null;
+			Board[promotion.EndingTileId] = newPiece;
+
+
+            CurrentTurnColor = movingPiece.Color == ColorEnum.White ? ColorEnum.Black : ColorEnum.White;
+            if (KingIsInDanger(CurrentTurnColor))
+            {
+                KingInCheck = true;
+                if (KingIsCheckmated(CurrentTurnColor))
+                {
+                    CheckMate = true;
+                    VictoryColor = movingPiece.Color;
+                }
+            }
+            else
+            {
+                KingInCheck = false;
+            }
+            LastMove = new Move()
+			{
+				StartingTileId = promotion.StartingTileId,
+				EndingTileId = promotion.EndingTileId
+			};
+        }
 
 		private bool PieceIsCastling(Move move, IPiece movingPiece)
 		{

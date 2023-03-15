@@ -7,13 +7,13 @@
         <CascadingValue Value="@GameId">
             <CascadingValue Value="@hubConnection">
                 <NavBar></NavBar>
-                <h4 class="color-blue-light">Welcome to Chess Online! Click Create Game to get started!</h4>
+                <h4 class="color-blue-light">Welcome to Chess Online @UserState.username! Click Create Game to get started!</h4>
                 <div class="rowContainer">
 
 
                     <Chess opponent="@opponent"></Chess>
                     <div class="columnContainer">
-                        <h2 style="color:red; margin: 0.8rem;">@errorMessage</h2>
+                        <h2 class="color-blue-light" style="margin: 0.8rem;">@errorMessage</h2>
                         <Timer></Timer>
                         <Chat Messages="@messages"></Chat>
                     </div>
