@@ -1,9 +1,4 @@
 {
-  "iisSettings": {
-    "iisExpress": {
-      "sslPort": 44370
-    }
-  },
   "profiles": {
     "http": {
       "commandName": "Project",
@@ -25,6 +20,14 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:64805/",
+      "sslPort": 44341
     }
   }
 }
