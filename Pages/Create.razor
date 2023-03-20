@@ -1,5 +1,6 @@
 ﻿@page "/Create"
 @inject NavigationManager Navigation
+@inject IConfiguration Configuration
 
 
 @if (gameGuid is null)
@@ -22,7 +23,7 @@ else
         <div class="LoginCard" style="padding-bottom: 2rem;">
             <h2 class="loginh2">Send this id or link to your opponent:</h2>
             <h3 class="color-blue-light">@gameGuid</h3>
-            <h3 style="text-align:center" class="color-blue-light">http://3.80.19.212/live/@gameGuid</h3>
+            <h3 style="text-align:center" class="color-blue-light">http://@(Configuration["PublicIp"])/live/@gameGuid</h3>
             <p>When ready, click the button below to go to the game.</p>
             <a class="btn" style="padding:0.8rem;" href="/live/@gameGuid">Join Game</a>
         </div>
